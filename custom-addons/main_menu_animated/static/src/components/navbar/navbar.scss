@@ -451,6 +451,23 @@ body .o_control_panel .o_facet_remove:hover {
     transform: scale(1.2) !important;
 }
 
+/* FIX: Neutralize Odoo's native hover indicators (white boxes/shadows) */
+body .o_control_panel .o_searchview_facet .opacity-100-hover,
+body .o_control_panel .o_searchview_facet .bg-view,
+body .o_control_panel .o_searchview_facet .shadow {
+    display: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+/* Ensure the pencil icon (editing mode) is visible but clean */
+body .o_control_panel .o_searchview_facet_label .opacity-100-hover {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: rgba(0, 0, 0, 0.2) !important; /* Subtle dark overlay for pencil */
+}
+
 /* Ensure the search input placeholder is visible on dark backgrounds */
 body .o_control_panel .o_searchview_input::placeholder {
     color: rgba(255, 255, 255, 0.6) !important;
