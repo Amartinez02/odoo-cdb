@@ -128,11 +128,11 @@
                                            column_invisible="1"/>
                                     <field name="partner_id"
                                            widget="many2one_avatar"
-                                           readonly="election_state != 'draft'"/>
+                                           />
                                     <field name="position_id"
                                            decoration-info="1"
                                            decoration-bf="1"
-                                           readonly="election_state != 'draft'"/>
+                                           />
                                     <field name="votes"
                                            decoration-bf="1"/>
                                     <field name="percentage"
