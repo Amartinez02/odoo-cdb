@@ -394,6 +394,7 @@
                 header, .navbar, .o_navbar,
                 #oe_main_menu_navbar,
                 .o_frontend_header,
+                .js_language_selector,
                 [role="navigation"] { display: none !important; }
                 main { padding-top: 0 !important; margin-top: 0 !important; }
                 /* Force hide rank numbers/circles */
@@ -652,7 +653,7 @@
                 }
                 .o_footer, footer, .o_main_navbar, nav.navbar, nav,
                 header, .navbar, .o_navbar, #oe_main_menu_navbar,
-                .o_frontend_header, [role="navigation"] { display: none !important; }
+                .o_frontend_header, .js_language_selector, [role="navigation"] { display: none !important; }
                 main { padding-top: 0 !important; margin-top: 0 !important; }
                 body { padding-top: 0 !important; }
 
