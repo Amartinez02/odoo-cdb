@@ -1,0 +1,159 @@
+/* CDB Split-Screen Login - THE NUCLEAR REPAIR */
+
+html, body {
+    height: 100% !important;
+    margin: 0 !important;
+    background: #ffffff !important;
+    overflow: hidden !important;
+}
+
+/* THE SPLIT CONTAINER */
+.o_cdb_login_container {
+    display: flex !important;
+    height: 100vh !important;
+    width: 100vw !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    z-index: 9999 !important;
+    background: white !important;
+}
+
+/* LEFT SIDE (60%) - BRANDING */
+.o_cdb_login_left {
+    flex: 0 0 60% !important;
+    width: 60% !important;
+    background: linear-gradient(135deg, #A61F2E 0%, #7d1722 100%) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 80px !important;
+    color: white !important;
+    box-sizing: border-box !important;
+}
+
+.o_cdb_logo_large {
+    background: white !important;
+    padding: 30px !important;
+    border-radius: 24px !important;
+    margin-bottom: 40px !important;
+    display: inline-block !important;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2) !important;
+}
+
+.o_cdb_logo_large img {
+    max-height: 150px !important;
+    width: auto !important;
+}
+
+.o_cdb_welcome_text {
+    font-size: 5rem !important;
+    font-weight: 800 !important;
+    line-height: 0.9 !important;
+    margin-bottom: 30px !important;
+    color: white !important;
+}
+
+.o_cdb_mission_text {
+    font-size: 1.6rem !important;
+    line-height: 1.5 !important;
+    color: rgba(255,255,255,0.95) !important;
+    font-weight: 300 !important;
+}
+
+/* RIGHT SIDE (40%) - FORM */
+.o_cdb_login_right {
+    flex: 0 0 40% !important;
+    width: 40% !important;
+    background: #ffffff !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 60px !important;
+    box-shadow: -10px 0 30px rgba(0,0,0,0.05) !important;
+    box-sizing: border-box !important;
+}
+
+.o_cdb_login_form_wrapper {
+    width: 100% !important;
+    max-width: 440px !important; /* Proper width for the form */
+}
+
+/* THE BUTTON - HYPER-SPECIFIC FORCE RED */
+html body .o_cdb_login_container .o_cdb_login_right button.btn-primary,
+html body .o_cdb_login_container .o_cdb_login_right .btn-primary,
+html body .o_cdb_login_container .o_cdb_login_right .o_cdb_btn_login,
+html body .o_cdb_login_container .o_cdb_login_right .oe_login_buttons .btn-primary {
+    background-color: #8e1116 !important; /* CORPORATE RED */
+    border: none !important;
+    color: #ffffff !important;
+    padding: 15px !important;
+    font-weight: 800 !important;
+    font-size: 1rem !important;
+    border-radius: 10px !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.1em !important;
+    width: 100% !important;
+    display: block !important;
+    margin-top: 20px !important;
+    box-shadow: 0 10px 20px rgba(217, 4, 41, 0.3) !important;
+    transition: all 0.3s ease !important;
+}
+
+html body .o_cdb_login_container .o_cdb_login_right .btn-primary:hover {
+    background-color: #ef233c !important;
+    transform: translateY(-2px) !important;
+}
+
+/* Minimalist Inputs Overrides */
+.o_cdb_form_content .form-control {
+    border: none !important;
+    border-bottom: 2px solid #e5e7eb !important;
+    border-radius: 0 !important;
+    padding: 16px 0 !important;
+    font-size: 1.3rem !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    color: #111827 !important;
+}
+
+.o_cdb_form_content .form-control:focus {
+    border-bottom-color: #d90429 !important;
+}
+
+.o_cdb_form_content .form-label {
+    font-weight: 700 !important;
+    color: #374151 !important;
+    font-size: 0.95rem !important;
+    margin-bottom: 15px !important;
+}
+
+/* Hide Unwanted Links Surgical Fallback */
+a[href*="/web/signup"], 
+a[href*="become"],
+button[name="redirect"][value="/web/become"] {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+/* Odoo Container Cleanups */
+.card, .card-body, .oe_login_form {
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+/* Responsive Table/Grid Overrides */
+.oe_login_buttons {
+    display: block !important;
+}
+
+/* Mobile Adjustments */
+@media (max-width: 991px) {
+    .o_cdb_login_left { display: none !important; }
+    .o_cdb_login_right { flex: 0 0 100% !important; width: 100% !important; padding: 40px 24px !important; }
+}

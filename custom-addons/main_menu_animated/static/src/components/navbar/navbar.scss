@@ -392,6 +392,70 @@ body .o_list_table {
     border-radius: 8px !important;
 }
 
+/* ── SEARCH VIEW FACETS (GLASSMORPHISM) ────────────────────────── */
+
+/* The main facet container */
+body .o_control_panel .o_searchview_facet {
+    background: rgba(255, 255, 255, 0.15) !important; /* Glass effect */
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    border-radius: 6px !important;
+    margin: 2px 4px !important;
+    color: #ffffff !important;
+    overflow: hidden !important;
+}
+
+/* Facet Label (The Left part, e.g. for Favorites/Filters) */
+body .o_control_panel .o_searchview_facet_label {
+    background-color: var(--cdb-primary-active) !important;
+    color: #ffffff !important;
+    padding: 2px 8px !important;
+    border-radius: 4px 0 0 4px !important;
+    font-weight: 700 !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
+/* Specific styling for the 'Favorite' label (often yellow in Odoo) */
+body .o_control_panel .o_searchview_facet_label.btn-favourite {
+    background-color: #ffc107 !important; /* Keep yellow but make it vibrant */
+    color: #000000 !important; /* Black star/text on yellow for contrast */
+}
+
+body .o_control_panel .o_searchview_facet_label.btn-favourite i {
+    color: #000000 !important;
+}
+
+/* Facet Values (The Right part with the text) */
+body .o_control_panel .o_facet_values {
+    background: transparent !important;
+    color: #ffffff !important;
+    padding: 2px 8px !important;
+}
+
+body .o_control_panel .o_facet_value {
+    color: #ffffff !important;
+    font-weight: 500 !important;
+}
+
+/* Facet Remove button (The X) */
+body .o_control_panel .o_facet_remove {
+    color: rgba(255, 255, 255, 0.7) !important;
+    opacity: 1 !important;
+    padding: 0 4px !important;
+    transition: all 0.2s ease !important;
+}
+
+body .o_control_panel .o_facet_remove:hover {
+    color: #ffffff !important;
+    background: transparent !important;
+    transform: scale(1.2) !important;
+}
+
+/* Ensure the search input placeholder is visible on dark backgrounds */
+body .o_control_panel .o_searchview_input::placeholder {
+    color: rgba(255, 255, 255, 0.6) !important;
+}
+
 /* ── MISC ───────────────────────────────────────────────────────── */
 
 /* switches */

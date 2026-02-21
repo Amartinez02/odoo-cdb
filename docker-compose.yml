@@ -20,7 +20,7 @@ services:
       - "8025:8069"
       - "8026:8072"
     tty: true
-    command: /usr/bin/odoo --db_user=odoo --db_host=db --db_password=odoo -d cdb -u cdb_management -d cdb -u cdb_management
+    command: /usr/bin/odoo --db_user=odoo --db_host=db --db_password=odoo -d cdb -u cdb_management,cdb_management_elections,cdb_login_style
     environment:
       - HOST=db
       - USER=odoo

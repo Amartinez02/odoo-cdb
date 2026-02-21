@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- 1. SPLIT LAYOUT WRAPPER (Restored Design) -->
+    <template id="cdb_login_layout_main" inherit_id="web.login_layout" name="CDB Login Layout" priority="10">
+        <xpath expr="//t[@t-set='body_classname']" position="replace">
+            <t t-set="body_classname" t-value="'o_cdb_login_body'"/>
+        </xpath>
+
+        <xpath expr="//div[contains(@class, 'container')]" position="replace">
+            <div class="o_cdb_login_container">
+                <div class="o_cdb_login_left">
+                    <div class="o_cdb_login_left_content">
+                        <div class="o_cdb_logo_large">
+                            <!-- Show the company logo -->
+                            <img t-attf-src="/web/binary/company_logo{{ '?dbname='+db if db else '' }}" alt="Logo"/>
+                        </div>
+                        <h1 class="o_cdb_welcome_text">Hola<br/>Casa de Bendición</h1>
+                        <p class="o_cdb_mission_text">
+                            Bienvenidos a nuestra plataforma de gestión eclesial. 
+                            Unidos para servir con excelencia y amor.
+                        </p>
+                        <div class="o_cdb_login_footer_left">
+                            © <t t-esc="datetime.date.today().year"/> ACYM Casa de Bendición.
+                        </div>
+                    </div>
+                </div>
+                <div class="o_cdb_login_right">
+                    <div class="o_cdb_login_form_wrapper">
+                        <!-- Branding on mobile -->
+                        <div class="o_cdb_mobile_logo d-md-none text-center mb-4">
+                            <img t-attf-src="/web/binary/company_logo{{ '?dbname='+db if db else '' }}" alt="Logo" style="max-height: 80px;"/>
+                        </div>
+                        
+                        <h2 class="o_cdb_form_title">¡Bienvenido!</h2>
+                        <p class="o_cdb_form_subtitle">Ingresa tus credenciales para continuar.</p>
+                        
+                        <div class="o_cdb_form_content">
+                            <!-- Injects the core login form content -->
+                            <t t-out="0"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </xpath>
+    </template>
+
+    <!-- 2. FORM TRANSLATIONS & LINK REMOVAL (Targeting web.login) -->
+    <template id="cdb_login_form_refine" inherit_id="web.login" name="CDB Login Form Refine" priority="20">
+        <!-- Translate Email Label -->
+        <xpath expr="//label[@for='login']" position="replace">
+            <label for="login" class="form-label">Correo Electrónico</label>
+        </xpath>
+        <!-- Translate Password Label -->
+        <xpath expr="//label[@for='password']" position="replace">
+            <label for="password" class="form-label">Contraseña</label>
+        </xpath>
+        
+        <!-- Translate Placeholders -->
+        <xpath expr="//input[@id='login']" position="attributes">
+            <attribute name="placeholder">Ingresa tu correo</attribute>
+        </xpath>
+        <xpath expr="//input[@id='password']" position="attributes">
+            <attribute name="placeholder">Ingresa tu contraseña</attribute>
+        </xpath>
+
+        <!-- Replace Submit Buttons & Clean Up Links -->
+        <xpath expr="//div[hasclass('oe_login_buttons')]" position="replace">
+            <div class="oe_login_buttons text-center d-grid mb-1 pt-3">
+                <button type="submit" class="btn btn-primary btn-block o_cdb_btn_login">ENTRAR</button>
+            </div>
+        </xpath>
+        
+    </template>
+
+    <!-- 3. AUTH_SIGNUP CLEANUP (Specific Targeting) -->
+    <template id="cdb_signup_cleanup" inherit_id="auth_signup.login" name="CDB Signup Clean" priority="30">
+        <!-- Remove "Don't have an account?" link - Targeting t-attf-href -->
+        <xpath expr="//a[contains(@t-attf-href, '/web/signup')]" position="replace"/>
+        
+        <!-- Replace Reset Password with Spanish localized version -->
+        <xpath expr="//a[contains(@t-attf-href, '/web/reset_password')]" position="replace">
+            <div class="mt-3 text-center">
+                <a t-if="reset_password_enabled" t-attf-href="/web/reset_password?#{keep_query()}" class="small text-muted">¿Olvidaste tu contraseña?</a>
+            </div>
+        </xpath>
+    </template>
+</odoo>
