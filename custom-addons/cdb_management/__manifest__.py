@@ -18,11 +18,11 @@ This module allows for the detailed management of church members, including:
     'data': [
         'security/security.xml',
         'security/ir.model.access.csv',
-        'views/church_menus.xml',
         'views/res_partner_views.xml',
         'views/church_attendance_views.xml',
         'views/church_attendance_report_views.xml',
         'views/church_activity_views.xml',
+        'views/church_menus.xml',
         'views/dashboard_views.xml',
         'views/config_views.xml',
     ],
