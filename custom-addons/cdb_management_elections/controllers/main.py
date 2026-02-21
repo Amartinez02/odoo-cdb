@@ -59,6 +59,8 @@ class CdbElectionController(http.Controller):
             'election': election,
             'positions': positions,
             'company_logo': self._get_company_logo(),
+            'languages': [],  # Fallback for portal.language_selector
+            'no_footer': True, # Skip footer rendering to avoid language selector issues
         }
         return request.render(
             'cdb_management_elections.cdb_election_live', values
@@ -105,6 +107,8 @@ class CdbElectionController(http.Controller):
             'election': election,
             'positions': positions,
             'company_logo': self._get_company_logo(),
+            'languages': [],  # Fallback for portal.language_selector
+            'no_footer': True, # Skip footer rendering
             'publish_date': (
                 election.date_end.strftime('%d/%m/%Y %H:%M')
                 if election.date_end else
