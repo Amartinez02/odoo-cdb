@@ -76,42 +76,12 @@ class ChurchAttendance(models.Model):
                 record._load_members()
         return records
 
-    def _load_members(self):
-        for record in self:
-            if record.state != 'pendiente':
-                continue
-
-            # Base domain: only church members
-            domain = [('x_is_church_member', '=', True)]
-            
-            # Apply criteria
-            if record.criteria == 'active':
-                domain.append(('active', '=', True))
-            elif record.criteria == 'baptized':
-                domain.extend([('active', '=', True), ('x_baptized', '=', True)])
-            elif record.criteria == 'not_baptized':
-                domain.extend([('active', '=', True), ('x_baptized', '=', False)])
-            elif record.criteria == 'assembly':
-                domain.extend([('active', '=', True), ('x_applies_for_assembly', '=', True)])
-            # 'all' implies no additional active filtering or baptized filtering, just all church members
-            
-            # Find members
-            members = self.env['res.partner'].search(domain, order='name asc')
-            
-            # Prepare new lines
-            new_lines = [(5, 0, 0)] # Command 5 clears existing records
-            for member in members:
-                new_lines.append((0, 0, {
-                    'partner_id': member.id,
-                    'status': 'no',
-                }))
-            record.write({'line_ids': new_lines})
-
-    @api.onchange('criteria')
-    def _onchange_criteria(self):
-        # We can simulate the reloading in the UI by using `update` or directly changing line_ids
+    def _get_member_domain(self):
+        self.ensure_one()
+        # Base domain: only church members
         domain = [('x_is_church_member', '=', True)]
         
+        # Apply criteria
         if self.criteria == 'active':
             domain.append(('active', '=', True))
         elif self.criteria == 'baptized':
@@ -120,16 +90,67 @@ class ChurchAttendance(models.Model):
             domain.extend([('active', '=', True), ('x_baptized', '=', False)])
         elif self.criteria == 'assembly':
             domain.extend([('active', '=', True), ('x_applies_for_assembly', '=', True)])
+        # 'all' implies no additional active filtering or baptized filtering, just all church members
+        return domain
+
+    def _sync_attendance_lines(self):
+        for record in self:
+            if record.state == 'cerrado':
+                continue
             
-        members = self.env['res.partner'].search(domain, order='name asc')
-        
-        new_lines = [(5, 0, 0)]
-        for member in members:
-            new_lines.append((0, 0, {
-                'partner_id': member.id,
-                'status': 'no',
-            }))
-        self.line_ids = new_lines
+            target_domain = record._get_member_domain()
+            target_members = self.env['res.partner'].search(target_domain)
+            target_member_ids = set(target_members.ids)
+            
+            current_lines = record.line_ids
+            partner_ids_in_lines = set()
+            for line in current_lines:
+                # We need the real database ID for comparison
+                p_id = line.partner_id._origin.id if hasattr(line.partner_id, '_origin') and line.partner_id._origin else line.partner_id.id
+                if p_id:
+                    partner_ids_in_lines.add(p_id)
+
+            # 1. Add missing members
+            missing_member_ids = target_member_ids - partner_ids_in_lines
+            new_lines_commands = []
+            
+            if missing_member_ids:
+                # Search again to get them in order
+                new_members = self.env['res.partner'].search([('id', 'in', list(missing_member_ids))], order='name asc')
+                for member in new_members:
+                    new_lines_commands.append((0, 0, {
+                        'partner_id': member.id,
+                        'status': 'no',
+                    }))
+            
+            # 2. Identify lines to remove
+            # Must be: (Not in target AND status is 'no') 
+            # OR (Not active/church member AND status is 'no')
+            lines_to_remove = current_lines.filtered(
+                lambda l: (
+                    (l.partner_id.id not in target_member_ids) or
+                    (not l.partner_id.active) or
+                    (not l.partner_id.x_is_church_member)
+                ) and l.status == 'no'
+            )
+            
+            for line in lines_to_remove:
+                # Use (2, ID) to delete the line
+                # If it's a new record in onchange, we use (2, line.id)
+                new_lines_commands.append((2, line.id))
+            
+            if new_lines_commands:
+                if isinstance(record.id, models.NewId):
+                    record.line_ids = new_lines_commands
+                else:
+                    record.write({'line_ids': new_lines_commands})
+
+    def _load_members(self):
+        self._sync_attendance_lines()
+
+    @api.onchange('criteria')
+    def _onchange_criteria(self):
+        self._sync_attendance_lines()
 
     def action_open(self):
         self.write({'state': 'abierto'})
@@ -142,37 +163,7 @@ class ChurchAttendance(models.Model):
 
     def action_refresh_members(self):
         self.ensure_one()
-        if self.state == 'cerrado':
-            return
-            
-        # Current members in lines
-        existing_partner_ids = self.line_ids.mapped('partner_id').ids
-        
-        # Current active church members
-        members = self.env['res.partner'].search([
-            ('x_is_church_member', '=', True),
-            ('active', '=', True),
-            ('id', 'not in', existing_partner_ids)
-        ])
-        
-        if members:
-            new_lines = []
-            for member in members:
-                new_lines.append((0, 0, {
-                    'partner_id': member.id,
-                    'status': 'no',
-                }))
-            self.write({'line_ids': new_lines})
-        
-        # Also, check if we should remove members who NO LONGER are active or church members
-        # but only if their status is still 'no' (to avoid losing manually set data)
-        obsolete_lines = self.line_ids.filtered(
-            lambda l: (not l.partner_id.x_is_church_member or not l.partner_id.active) 
-            and l.status == 'no'
-        )
-        if obsolete_lines:
-            obsolete_lines.unlink()
-            
+        self._sync_attendance_lines()
         return True
 
 class ChurchAttendanceLine(models.Model):
