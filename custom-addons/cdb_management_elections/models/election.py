@@ -82,7 +82,7 @@ class CdbElection(models.Model):
         for election in self:
             for position in election.position_ids:
                 candidates = position.candidate_ids.sorted(
-                    key=lambda c: c.votes, reverse=True
+                    key=lambda c: (-c.votes, c.sequence)
                 )
                 winners_count = min(
                     position.winners_count, len(candidates)
@@ -138,7 +138,7 @@ class CdbElectionPosition(models.Model):
 class CdbElectionCandidate(models.Model):
     _name = 'cdb.election.candidate'
     _description = 'Election candidate'
-    _order = 'position_id, votes desc, id'
+    _order = 'position_id, sequence, id'
 
     election_id = fields.Many2one(
         'cdb.election', string='Election', required=True, ondelete='cascade')
@@ -149,6 +149,7 @@ class CdbElectionCandidate(models.Model):
     partner_id = fields.Many2one(
         'res.partner', string='Candidate', required=True,
         domain="[('x_is_church_member', '=', True)]")
+    sequence = fields.Integer(string='Sequence', default=10)
     votes = fields.Integer(string='Votes', default=0)
     election_state = fields.Selection(
         related='election_id.state', string='Election state', store=False)

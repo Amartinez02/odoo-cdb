@@ -15,7 +15,7 @@ class CdbElectionController(http.Controller):
         for pos in election.position_ids.sorted('sequence'):
             candidates = []
             sorted_cands = pos.candidate_ids.sorted(
-                key=lambda c: c.votes, reverse=True
+                key=lambda c: (-c.votes, c.sequence)
             )
             for rank, cand in enumerate(sorted_cands, start=1):
                 candidates.append({

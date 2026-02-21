@@ -122,7 +122,8 @@
                                    readonly="state == 'published'">
                                 <list editable="bottom"
                                       decoration-success="is_winner"
-                                      default_order="position_id">
+                                      default_order="sequence">
+                                    <field name="sequence" widget="handle"/>
                                     <field name="election_state"
                                            column_invisible="1"/>
                                     <field name="partner_id"

@@ -22,7 +22,8 @@ class ChurchAttendance(models.Model):
         ('all', 'All members'),
         ('active', 'Active members'),
         ('baptized', 'Baptized members'),
-        ('not_baptized', 'Non-baptized members')
+        ('not_baptized', 'Non-baptized members'),
+        ('assembly', 'Assembly members')
     ], string='Criteria', default='active', required=True, tracking=True)
     responsible_id = fields.Many2one('res.partner', string='Responsible', tracking=True)
     
@@ -90,6 +91,8 @@ class ChurchAttendance(models.Model):
                 domain.extend([('active', '=', True), ('x_baptized', '=', True)])
             elif record.criteria == 'not_baptized':
                 domain.extend([('active', '=', True), ('x_baptized', '=', False)])
+            elif record.criteria == 'assembly':
+                domain.extend([('active', '=', True), ('x_applies_for_assembly', '=', True)])
             # 'all' implies no additional active filtering or baptized filtering, just all church members
             
             # Find members
@@ -115,6 +118,8 @@ class ChurchAttendance(models.Model):
             domain.extend([('active', '=', True), ('x_baptized', '=', True)])
         elif self.criteria == 'not_baptized':
             domain.extend([('active', '=', True), ('x_baptized', '=', False)])
+        elif self.criteria == 'assembly':
+            domain.extend([('active', '=', True), ('x_applies_for_assembly', '=', True)])
             
         members = self.env['res.partner'].search(domain, order='name asc')
         

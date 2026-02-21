@@ -15,6 +15,7 @@
                 <field name="email"/>
                 <field name="x_sector"/>
                 <field name="x_baptized" widget="boolean_toggle"/>
+                <field name="x_applies_for_assembly" widget="boolean_toggle"/>
                 <field name="active" widget="boolean_toggle"/>
                 <field name="x_church_entry_date"/>
             </list>
@@ -78,6 +79,7 @@
                             <group>
                                 <group>
                                     <field name="x_baptized"/>
+                                    <field name="x_applies_for_assembly"/>
                                     <field name="x_baptism_date" invisible="not x_baptized"/>
                                     <field name="x_church_entry_date"/>
                                 </group>

@@ -6,6 +6,7 @@ class ResPartner(models.Model):
     _inherit = 'res.partner'
 
     x_is_church_member = fields.Boolean(string='Is church member', default=False)
+    x_applies_for_assembly = fields.Boolean(string='Applies for assembly', default=False)
 
     # Naming
     x_first_name = fields.Char(string='First name')
