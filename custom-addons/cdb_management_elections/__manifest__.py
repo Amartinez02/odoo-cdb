@@ -15,7 +15,7 @@ This module extends Church Management (CDB) to provide:
     'category': 'Human Resources',
     'author': 'Antigravity / Anthony Martinez',
     'website': 'https://github.com/Amartinez02/odoo-cdb',
-    'depends': ['cdb_management', 'bus'],
+    'depends': ['cdb_management', 'bus', 'website'],
     'data': [
         'security/security.xml',
         'security/ir.model.access.csv',
