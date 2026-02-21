@@ -1,0 +1,750 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ══════════════════════════════════════════════════════════════
+         Live Voting Board Template
+         ══════════════════════════════════════════════════════════════ -->
+    <template id="cdb_election_live" name="Election live board">
+        <t t-call="web.frontend_layout">
+            <t t-set="title" t-value="election.name"/>
+
+            <style>
+                @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap');
+
+                :root {
+                    --cdb-primary: #6b1520;
+                    --cdb-primary-light: #8b2030;
+                    --cdb-accent: #d4a843;
+                    --cdb-accent-glow: rgba(212, 168, 67, 0.35);
+                    --cdb-success: #16a34a;
+                    --cdb-success-bg: rgba(22, 163, 74, 0.10);
+                    --cdb-success-border: rgba(22, 163, 74, 0.25);
+                    --cdb-bg: #f5f5f5;
+                    --cdb-surface: #131a2b;
+                    --cdb-surface-alt: #1a2035;
+                    --cdb-border: rgba(255,255,255,0.07);
+                    --cdb-text: #eaf0f9;
+                    --cdb-muted: #7a8ba7;
+                    --cdb-radius: 18px;
+                    --cdb-radius-sm: 12px;
+                }
+
+                body, html { background: var(--cdb-bg) !important; }
+
+                .cdb-board {
+                    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+                    color: #1a1a1a;
+                    min-height: 100vh;
+                    background: var(--cdb-bg);
+                    -webkit-font-smoothing: antialiased;
+                }
+
+                /* ── HEADER ────────────────────────────── */
+                .cdb-header {
+                    background: #ffffff;
+                    padding: 1.8rem 0;
+                    border-bottom: 3px solid var(--cdb-primary);
+                    position: relative;
+                }
+                .cdb-header-inner {
+                    max-width: 1400px;
+                    margin: 0 auto;
+                    padding: 0 2rem;
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    gap: 1.5rem;
+                }
+                .cdb-logo-img {
+                    height: 64px;
+                    flex-shrink: 0;
+                }
+                .cdb-header-text h1 {
+                    font-size: 2rem;
+                    font-weight: 800;
+                    margin: 0;
+                    letter-spacing: -0.5px;
+                    color: #1a1a1a;
+                }
+                .cdb-meta {
+                    display: flex;
+                    align-items: center;
+                    gap: 1rem;
+                    margin-top: 0.5rem;
+                    flex-wrap: wrap;
+                }
+                .cdb-state-pill {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 6px;
+                    padding: 0.3em 1em;
+                    border-radius: 999px;
+                    font-size: 0.8rem;
+                    font-weight: 700;
+                    text-transform: uppercase;
+                    letter-spacing: 0.5px;
+                }
+                .cdb-state-open {
+                    background: rgba(22,163,74,0.12);
+                    color: #16a34a;
+                    border: 1px solid rgba(22,163,74,0.3);
+                    animation: pulse-glow 2.5s ease-in-out infinite;
+                }
+                .cdb-state-closed {
+                    background: rgba(239,68,68,0.12);
+                    color: #dc2626;
+                    border: 1px solid rgba(239,68,68,0.3);
+                }
+                .cdb-state-draft {
+                    background: rgba(0,0,0,0.06);
+                    color: #64748b;
+                }
+                .cdb-state-published {
+                    background: rgba(212,168,67,0.12);
+                    color: #b8860b;
+                    border: 1px solid rgba(212,168,67,0.3);
+                }
+                @keyframes pulse-glow {
+                    0%, 100% { box-shadow: 0 0 0 0 rgba(22,163,74,0.4); }
+                    50% { box-shadow: 0 0 0 8px rgba(22,163,74,0); }
+                }
+                .cdb-total-pill {
+                    color: #64748b;
+                    font-size: 0.85rem;
+                    font-weight: 500;
+                }
+                .cdb-total-pill strong {
+                    color: #1a1a1a;
+                    font-weight: 700;
+                }
+                .cdb-results-btn {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 6px;
+                    background: var(--cdb-primary);
+                    color: #fff;
+                    padding: 0.4em 1em;
+                    border-radius: 999px;
+                    font-size: 0.85rem;
+                    font-weight: 700;
+                    text-decoration: none;
+                    transition: background 0.2s ease, transform 0.2s;
+                }
+                .cdb-results-btn:hover {
+                    background: var(--cdb-primary-light);
+                    color: #fff;
+                    transform: translateY(-1px);
+                }
+                .cdb-board[data-state="open"] .cdb-results-btn,
+                .cdb-board[data-state="draft"] .cdb-results-btn {
+                    display: none !important;
+                }
+
+                /* ── POSITIONS CONTAINER ───────────────── */
+                .cdb-body {
+                    max-width: 1400px;
+                    margin: 0 auto;
+                    padding: 2rem 1.5rem 4rem;
+                    display: grid;
+                    grid-template-columns: repeat(3, 1fr);
+                    gap: 1.25rem;
+                    align-items: start;
+                }
+
+                /* ── POSITION CARD ─────────────────────── */
+                .cdb-pos-card {
+                    background: #ffffff;
+                    color: #1a1a1a;
+                    border: 1px solid #e5e7eb;
+                    border-radius: var(--cdb-radius);
+                    overflow: hidden;
+                    box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+                    transition: transform 0.2s ease, box-shadow 0.2s ease;
+                }
+                .cdb-pos-card:hover {
+                    transform: translateY(-3px);
+                    box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+                }
+                
+                .cdb-pos-head {
+                    display: flex !important;
+                    justify-content: space-between !important;
+                    align-items: center !important;
+                    flex-wrap: nowrap !important;
+                    padding: 1rem 1.5rem;
+                    background: #f8fafc;
+                    border-bottom: 2px solid var(--cdb-primary);
+                    cursor: pointer;
+                    user-select: none;
+                    transition: background 0.2s ease;
+                }
+                .cdb-pos-head:hover {
+                    background: #f1f5f9;
+                }
+                .cdb-pos-title {
+                    flex: 1;
+                    font-size: 1.2rem;
+                    font-weight: 700;
+                    margin: 0 !important;
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                    color: var(--cdb-primary);
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+                .cdb-chevron {
+                    font-size: 0.8rem;
+                    color: #94a3b8;
+                    margin-left: 1rem;
+                    transition: transform 0.3s ease;
+                    display: inline-block;
+                }
+                .cdb-pos-card.collapsed .cdb-chevron {
+                    transform: rotate(-90deg);
+                }
+                .cdb-pos-content {
+                    max-height: 2000px; /* Large enough for many candidates */
+                    overflow: hidden;
+                    transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+                    opacity: 1;
+                }
+                .cdb-pos-card.collapsed .cdb-pos-content {
+                    display: none !important;
+                }
+                .cdb-pos-title .pos-icon {
+                    width: 28px;
+                    height: 28px;
+                    border-radius: 8px;
+                    background: rgba(240,180,41,0.12);
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 0.85rem;
+                    color: var(--cdb-accent);
+                }
+
+
+                /* ── CANDIDATE ROW ─────────────────────── */
+                .cdb-cands {
+                    padding: 0.5rem 0.75rem;
+                }
+                .cdb-cand {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.9rem;
+                    padding: 0.75rem 0.8rem;
+                    border-radius: var(--cdb-radius-sm);
+                    transition: background 0.15s ease;
+                    margin-bottom: 2px;
+                }
+                .cdb-cand:hover {
+                    background: #f1f5f9;
+                }
+                .cdb-cand.winner {
+                    background: var(--cdb-success-bg);
+                    border: 1px solid var(--cdb-success-border);
+                }
+
+                /* avatar */
+                .cdb-avatar {
+                    width: 46px;
+                    height: 46px;
+                    border-radius: 50%;
+                    object-fit: cover;
+                    border: 2px solid #e2e8f0;
+                    flex-shrink: 0;
+                    background: #f8fafc;
+                }
+                .cdb-cand.winner .cdb-avatar {
+                    border-color: var(--cdb-accent);
+                    box-shadow: 0 0 16px var(--cdb-accent-glow);
+                }
+
+                /* info block */
+                .cdb-info {
+                    flex: 1;
+                    min-width: 0;
+                }
+                .cdb-name {
+                    font-weight: 600;
+                    font-size: 0.95rem;
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                    flex-wrap: wrap;
+                }
+                .cdb-elected-badge {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 4px;
+                    background: var(--cdb-success);
+                    color: #fff;
+                    padding: 2px 10px;
+                    border-radius: 999px;
+                    font-size: 0.65rem;
+                    font-weight: 800;
+                    text-transform: uppercase;
+                    letter-spacing: 0.8px;
+                }
+
+                /* progress bar */
+                .cdb-bar-row {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                    margin-top: 5px;
+                }
+                .cdb-track {
+                    flex: 1;
+                    height: 5px;
+                    background: #e2e8f0;
+                    border-radius: 3px;
+                    overflow: hidden;
+                }
+                .cdb-fill {
+                    height: 100%;
+                    border-radius: 3px;
+                    background: linear-gradient(90deg, #d4a843 0%, #e8c864 100%);
+                    transition: width 0.6s cubic-bezier(0.4,0,0.2,1);
+                    min-width: 1px;
+                }
+                .cdb-cand.winner .cdb-fill {
+                    background: linear-gradient(90deg, #16a34a 0%, #4ade80 100%);
+                }
+                .cdb-pct {
+                    font-size: 0.75rem;
+                    color: #64748b;
+                    font-weight: 700;
+                    min-width: 42px;
+                    text-align: right;
+                }
+
+                /* votes */
+                .cdb-votes {
+                    text-align: center;
+                    flex-shrink: 0;
+                    min-width: 52px;
+                }
+                .cdb-vote-num {
+                    display: block;
+                    font-size: 1.5rem;
+                    font-weight: 900;
+                    line-height: 1;
+                    color: #1a1a1a;
+                }
+                .cdb-vote-label {
+                    font-size: 0.6rem;
+                    color: #64748b;
+                    text-transform: uppercase;
+                    letter-spacing: 1px;
+                    font-weight: 600;
+                }
+
+                /* position footer */
+                .cdb-pos-foot {
+                    padding: 0.6rem 1.5rem;
+                    border-top: 1px solid #e5e7eb;
+                    font-size: 0.78rem;
+                    color: #64748b;
+                    text-align: right;
+                    font-weight: 500;
+                }
+
+                /* board footer */
+                .cdb-footer {
+                    max-width: 1100px;
+                    margin: 0 auto;
+                    padding: 2rem 1.5rem;
+                    text-align: center;
+                    color: #94a3b8;
+                    font-size: 0.8rem;
+                    border-top: 1px solid #e5e7eb;
+                }
+
+                /* vote flash animation */
+                @keyframes vote-flash {
+                    0% { background-color: rgba(240,180,41,0.25); }
+                    100% { background-color: transparent; }
+                }
+                .cdb-flash { animation: vote-flash 0.7s ease-out; }
+
+                /* responsive */
+                @media (max-width: 1100px) {
+                    .cdb-body { grid-template-columns: repeat(2, 1fr); }
+                }
+                @media (max-width: 768px) {
+                    .cdb-header-text h1 { font-size: 1.4rem; }
+                    .cdb-header-inner { flex-wrap: wrap; }
+                    .cdb-pos-title { font-size: 1.1rem; }
+                    .cdb-cand { gap: 0.5rem; }
+                    .cdb-avatar { width: 36px; height: 36px; }
+                    .cdb-vote-num { font-size: 1.2rem; }
+                    .cdb-body { grid-template-columns: 1fr; }
+                }
+                @media (max-width: 480px) {
+                    .cdb-avatar { display: none; }
+                    .cdb-body { padding: 1rem 0.75rem 3rem; }
+                }
+
+                /* Hide ALL Odoo chrome (navbar, footer, header) */
+                .o_footer, footer,
+                .o_main_navbar, nav.navbar, nav,
+                header, .navbar, .o_navbar,
+                #oe_main_menu_navbar,
+                .o_frontend_header,
+                [role="navigation"] { display: none !important; }
+                main { padding-top: 0 !important; margin-top: 0 !important; }
+                /* Force hide rank numbers/circles */
+                .cdb-rank, .cdb-candidate-rank, .cdb-res-rank {
+                    display: none !important;
+                }
+            </style>
+
+            <div class="cdb-board" t-att-data-election-id="election.id" t-att-data-state="election.state">
+                <!-- HEADER -->
+                <div class="cdb-header">
+                    <div class="cdb-header-inner">
+                        <div class="cdb-header-text">
+                            <h1><t t-out="election.name"/></h1>
+                            <div class="cdb-meta">
+                                <span t-attf-class="cdb-state-pill cdb-state-#{election.state}">
+                                    <t t-if="election.state == 'open'">🟢 Votación abierta</t>
+                                    <t t-if="election.state == 'closed'">🔴 Votación cerrada</t>
+                                    <t t-if="election.state == 'published'">📋 Publicado</t>
+                                    <t t-if="election.state == 'draft'">Borrador</t>
+                                </span>
+                                <span class="cdb-total-pill">
+                                    Total de votos: <strong t-out="election.total_votes"/>
+                                </span>
+                                <a t-attf-href="/cdb/elections/#{election.id}/results" class="cdb-results-btn">
+                                    📊 Ver resultados y ganadores
+                                </a>
+                            </div>
+                        </div>
+                        <t t-if="company_logo">
+                            <img t-att-src="company_logo" alt="Logo" class="cdb-logo-img"/>
+                        </t>
+                    </div>
+                </div>
+
+                <!-- POSITIONS -->
+                <div class="cdb-body" id="cdb-positions-data">
+                    <t t-foreach="positions" t-as="pos">
+                        <t t-if="pos.get('candidates')">
+                            <div class="cdb-pos-card" t-att-data-position-id="pos['id']">
+                                <div class="cdb-pos-head cdb-accordion-trigger">
+                                    <h2 class="cdb-pos-title">
+                                        <span class="pos-icon">🏛</span>
+                                        <t t-out="pos['name']"/>
+                                    </h2>
+                                    <span class="cdb-chevron">▼</span>
+                                </div>
+                                <div class="cdb-pos-content">
+                                    <div class="cdb-cands">
+                                        <t t-foreach="pos['candidates']" t-as="cand">
+                                            <div t-attf-class="cdb-cand #{'winner' if cand['is_winner'] and election.state in ('closed','published') else ''}"
+                                                 t-att-data-candidate-id="cand['id']">
+                                                <img t-att-src="'/web/image/res.partner/%s/image_128' % cand['partner_id']"
+                                                     alt="" class="cdb-avatar"
+                                                     onerror="this.src='/cdb_management_elections/static/src/img/default_avatar.svg'"/>
+                                                <div class="cdb-info">
+                                                    <div class="cdb-name">
+                                                        <t t-out="cand['name']"/>
+                                                        <span class="cdb-elected-badge" t-if="cand['is_winner'] and election.state in ('closed','published')">
+                                                            ⭐ Electo
+                                                        </span>
+                                                    </div>
+                                                    <div class="cdb-bar-row">
+                                                        <div class="cdb-track">
+                                                            <div class="cdb-fill"
+                                                                 t-attf-style="width: #{cand['percentage']}%"/>
+                                                        </div>
+                                                        <span class="cdb-pct">
+                                                            <t t-out="'%.1f' % cand['percentage']"/>%
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div class="cdb-votes">
+                                                    <span class="cdb-vote-num" t-out="cand['votes']"/>
+                                                    <span class="cdb-vote-label">votos</span>
+                                                </div>
+                                            </div>
+                                        </t>
+                                    </div>
+                                    <div class="cdb-pos-foot">
+                                        Total votos posición: <strong t-out="pos['total_votes']"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </t>
+                </div>
+
+                <!-- FOOTER -->
+                <div class="cdb-footer">
+                    <t t-out="election.name"/> — Casa de Bendición
+                </div>
+            </div>
+
+
+        </t>
+    </template>
+
+    <!-- ══════════════════════════════════════════════════════════════
+         Published Results Page Template
+         ══════════════════════════════════════════════════════════════ -->
+    <template id="cdb_election_results" name="Election results">
+        <t t-call="web.frontend_layout">
+            <t t-set="title" t-valuef="Resultados: #{election.name}"/>
+
+            <style>
+                @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap');
+
+                :root {
+                    --r-primary: #6b1520;
+                    --r-primary-light: #8b2030;
+                    --r-accent: #d4a843;
+                    --r-accent-glow: rgba(212,168,67,0.3);
+                    --r-success: #16a34a;
+                    --r-bg: #f5f5f5;
+                    --r-surface: #1a2035;
+                    --r-border: rgba(255,255,255,0.07);
+                    --r-text: #eaf0f9;
+                    --r-muted: #7a8ba7;
+                    --r-radius: 18px;
+                }
+                body, html { background: var(--r-bg) !important; }
+                .cdb-results {
+                    font-family: 'Inter', system-ui, sans-serif;
+                    color: #1a1a1a;
+                    min-height: 100vh;
+                    background: var(--r-bg);
+                    -webkit-font-smoothing: antialiased;
+                }
+                .cdb-res-header {
+                    background: #ffffff;
+                    padding: 1.8rem 0;
+                    border-bottom: 3px solid var(--r-primary);
+                    position: relative;
+                }
+                .cdb-res-header-inner {
+                    max-width: 1400px;
+                    margin: 0 auto;
+                    padding: 0 2rem;
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    gap: 1.5rem;
+                }
+                .cdb-res-logo { height: 64px; flex-shrink: 0; }
+                .cdb-res-text { text-align: left; }
+                .cdb-res-header h1 {
+                    font-size: 1.6rem;
+                    font-weight: 900;
+                    text-transform: uppercase;
+                    letter-spacing: 3px;
+                    color: #1a1a1a;
+                    margin: 0 0 0.3rem;
+                }
+                .cdb-res-header h2 {
+                    font-size: 1.3rem;
+                    font-weight: 600;
+                    margin: 0 0 0.5rem;
+                    color: #1a1a1a;
+                }
+                .cdb-res-date { color: #64748b; font-size: 0.85rem; margin: 0; }
+                .cdb-res-body {
+                    max-width: 1400px;
+                    margin: 0 auto;
+                    padding: 2rem 2rem 3rem;
+                    display: grid;
+                    grid-template-columns: repeat(3, 1fr);
+                    gap: 1.25rem;
+                    align-items: start;
+                }
+                .cdb-res-card {
+                    background: #ffffff;
+                    color: #1a1a1a;
+                    border: 1px solid #e5e7eb;
+                    border-radius: var(--r-radius);
+                    overflow: hidden;
+                    box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+                }
+                .cdb-res-card-head {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    padding: 1.2rem 1.5rem;
+                    background: #f8fafc;
+                    border-bottom: 2px solid var(--r-primary);
+                }
+                .cdb-res-card-head h3 {
+                    margin: 0;
+                    font-size: 1.15rem;
+                    font-weight: 700;
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                    color: var(--r-primary);
+                }
+                .cdb-res-card-head h3 .ri { color: var(--r-accent); }
+                .cdb-res-total { color: #64748b; font-size: 0.8rem; font-weight: 500; }
+                .cdb-res-rows { padding: 0.5rem 1rem; }
+                .cdb-res-row {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.75rem;
+                    padding: 0.65rem 0.6rem;
+                    border-radius: 12px;
+                    margin-bottom: 2px;
+                }
+                .cdb-res-row:hover { background: #f1f5f9; }
+                .cdb-res-row.rw {
+                    background: rgba(22,163,74,0.08);
+                    border: 1px solid rgba(22,163,74,0.18);
+                }
+                .cdb-res-rank {
+                    width: 30px; height: 30px; border-radius: 50%;
+                    display: flex; align-items: center; justify-content: center;
+                    font-weight: 800; font-size: 0.8rem;
+                    background: #f8fafc;
+                    border: 2px solid #e2e8f0;
+                    color: #64748b;
+                    flex-shrink: 0;
+                }
+                .cdb-res-row.rw .cdb-res-rank {
+                    background: var(--r-accent);
+                    border-color: var(--r-accent);
+                    color: #000;
+                }
+                .cdb-res-av {
+                    width: 40px; height: 40px; border-radius: 50%;
+                    object-fit: cover; flex-shrink: 0;
+                    border: 2px solid #e2e8f0;
+                    background: #f8fafc;
+                }
+                .cdb-res-row.rw .cdb-res-av {
+                    border-color: var(--r-accent);
+                }
+                .cdb-res-info { flex: 1; }
+                .cdb-res-name { font-weight: 600; font-size: 0.92rem; }
+                .cdb-res-badge {
+                    display: inline-flex; align-items: center; gap: 4px;
+                    background: var(--r-success); color: #fff;
+                    padding: 2px 8px; border-radius: 999px;
+                    font-size: 0.6rem; font-weight: 800;
+                    text-transform: uppercase; letter-spacing: 0.5px;
+                    margin-left: 6px;
+                }
+                .cdb-res-stats { text-align: right; flex-shrink: 0; }
+                .cdb-res-v { font-weight: 700; font-size: 0.9rem; }
+                .cdb-res-p { color: #64748b; font-size: 0.78rem; margin-left: 4px; }
+                .cdb-res-footer {
+                    max-width: 1400px;
+                    margin: 0 auto;
+                    padding: 2rem 2rem 3rem;
+                    text-align: center;
+                    color: #94a3b8;
+                    font-size: 0.8rem;
+                    border-top: 1px solid #e5e7eb;
+                }
+                .o_footer, footer, .o_main_navbar, nav.navbar, nav,
+                header, .navbar, .o_navbar, #oe_main_menu_navbar,
+                .o_frontend_header, [role="navigation"] { display: none !important; }
+                main { padding-top: 0 !important; margin-top: 0 !important; }
+                body { padding-top: 0 !important; }
+
+                @media (max-width: 1100px) {
+                    .cdb-res-body { grid-template-columns: repeat(2, 1fr); }
+                }
+                @media (max-width: 768px) {
+                    .cdb-res-body { grid-template-columns: 1fr; }
+                    .cdb-res-header-inner { flex-direction: column; text-align: center; }
+                    .cdb-res-text { text-align: center; }
+                }
+                @media (max-width: 480px) {
+                    .cdb-res-av { display: none; }
+                    .cdb-res-body { padding: 1rem 0.75rem; }
+                /* Force hide rank numbers/circles */
+                .cdb-rank, .cdb-candidate-rank, .cdb-res-rank {
+                    display: none !important;
+                }
+            </style>
+
+            <div class="cdb-results">
+                <div class="cdb-res-header">
+                    <div class="cdb-res-header-inner">
+                        <div class="cdb-res-text">
+                            <h1>Resultados oficiales</h1>
+                            <h2><t t-out="election.name"/></h2>
+                            <p class="cdb-res-date" t-if="election.date_end">
+                                📅 <t t-out="election.date_end"/>
+                            </p>
+                        </div>
+                        <t t-if="company_logo">
+                            <img t-att-src="company_logo" alt="Logo" class="cdb-res-logo"/>
+                        </t>
+                    </div>
+                </div>
+
+                <div class="cdb-res-body">
+                    <t t-foreach="positions" t-as="pos">
+                        <t t-if="pos.get('candidates')">
+                            <div class="cdb-res-card">
+                            <div class="cdb-res-card-head">
+                                <h3>
+                                    <span class="ri">🏛</span>
+                                    <t t-out="pos['name']"/>
+                                </h3>
+                                <span class="cdb-res-total">
+                                    <t t-out="pos['total_votes']"/> votos
+                                </span>
+                            </div>
+                            <div class="cdb-res-rows">
+                                <t t-foreach="pos['candidates']" t-as="cand">
+                                    <t t-if="cand['is_winner']">
+                                        <div t-attf-class="cdb-res-row #{'rw' if cand['is_winner'] else ''}">
+                                            <img t-att-src="'/web/image/res.partner/%s/image_128' % cand['partner_id']"
+                                                 alt="" class="cdb-res-av"
+                                                 onerror="this.src='/cdb_management_elections/static/src/img/default_avatar.svg'"/>
+                                            <div class="cdb-res-info">
+                                                <span class="cdb-res-name">
+                                                    <t t-out="cand['name']"/>
+                                                </span>
+                                                <t t-if="cand['is_winner']">
+                                                    <span class="cdb-res-badge">⭐ Electo</span>
+                                                </t>
+                                            </div>
+                                            <div class="cdb-res-stats">
+                                                <span class="cdb-res-v">
+                                                    <t t-out="cand['votes']"/>
+                                                </span>
+                                                <span class="cdb-res-p">
+                                                    (<t t-out="'%.1f' % cand['percentage']"/>%)
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </t>
+                                </t>
+                            </div>
+                        </div>
+                        </t>
+                    </t>
+                </div>
+
+                <div class="cdb-res-footer">
+                    <p>
+                        Resultados publicados el
+                        <strong><t t-out="publish_date"/></strong>
+                    </p>
+                    <p style="margin-top: 4px;">
+                        Casa de Bendición — Sistema de elecciones
+                    </p>
+                </div>
+            </div>
+        </t>
+    </template>
+
+</odoo>

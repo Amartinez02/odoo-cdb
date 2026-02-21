@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_church_attendance_report_list" model="ir.ui.view">
+        <field name="name">church.attendance.report.list</field>
+        <field name="model">church.attendance.report</field>
+        <field name="arch" type="xml">
+            <list string="Attendance reports">
+                <field name="date"/>
+                <field name="name"/>
+                <field name="presencial_count" sum="Total Presencial"/>
+                <field name="online_count" sum="Total Online"/>
+                <field name="total_attendance" sum="Total Attendance"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_church_attendance_report_form" model="ir.ui.view">
+        <field name="name">church.attendance.report.form</field>
+        <field name="model">church.attendance.report</field>
+        <field name="arch" type="xml">
+            <form string="Attendance report">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="date"/>
+                        </group>
+                        <group>
+                            <field name="presencial_count"/>
+                            <field name="online_count"/>
+                            <field name="total_attendance" class="font-weight-bold"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="New visitors" name="new_visitors">
+                            <field name="new_attendee_line_ids">
+                                <list editable="bottom">
+                                    <field name="name" string="Nombre"/>
+                                    <field name="invited_by_id" string="Quien lo invita" options="{'no_create': True}"/>
+                                    <field name="visit_reason" string="Motivo de visita"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="notes" placeholder="Additional notes about the service..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_church_attendance_report" model="ir.actions.act_window">
+        <field name="name">Attendance reports</field>
+        <field name="res_model">church.attendance.report</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first attendance report
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_church_attendance_report"
+              name="Attendance reports"
+              parent="menu_church_attendance_main"
+              action="action_church_attendance_report"
+              sequence="20"/>
+</odoo>

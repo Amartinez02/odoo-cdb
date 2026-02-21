@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Ministry Views -->
+    <record id="view_church_ministry_list" model="ir.ui.view">
+        <field name="name">church.ministry.list</field>
+        <field name="model">church.ministry</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name" string="Nombre"/>
+                <field name="description"/>
+                <field name="color" widget="color_picker"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_church_ministry" model="ir.actions.act_window">
+        <field name="name">Ministries</field>
+        <field name="res_model">church.ministry</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first church ministry
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_church_ministry"
+              name="Ministries"
+              parent="menu_church_config"
+              action="action_church_ministry"
+              sequence="20"/>
+
+    <!-- Role Views -->
+    <record id="view_church_role_list" model="ir.ui.view">
+        <field name="name">church.role.list</field>
+        <field name="model">church.role</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name" string="Nombre"/>
+                <field name="description"/>
+                <field name="color" widget="color_picker"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_church_role" model="ir.actions.act_window">
+        <field name="name">Roles</field>
+        <field name="res_model">church.role</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first church role
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_church_role"
+              name="Roles"
+              parent="menu_church_config"
+              action="action_church_role"
+              sequence="30"/>
+</odoo>

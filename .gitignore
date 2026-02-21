@@ -1,0 +1,18 @@
+# PostgreSQL data folder
+postgresql/
+
+# VS Code settings
+.vscode/
+
+# Ignore all in etc folder...
+etc/*
+# ...except odoo.conf
+!etc/odoo.conf
+
+# Python compilation files
+__pycache__/
+*.pyc
+*.pyo
+
+# Mac OS files
+.DS_Store

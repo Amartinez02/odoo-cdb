@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Top-level Menu -->
+    <menuitem id="menu_church_root"
+              name="ACYM CDB"
+              web_icon="cdb_management,static/description/icon.png"
+              sequence="10"/>
+
+    <!-- Main Menus -->
+    <menuitem id="menu_church_members_main"
+              name="Members"
+              parent="menu_church_root"
+              sequence="10"/>
+
+    <menuitem id="menu_church_attendance_main"
+              name="Attendance"
+              parent="menu_church_root"
+              sequence="20"/>
+
+    <menuitem id="menu_church_config"
+              name="Configuration"
+              parent="menu_church_root"
+              sequence="100"
+              groups="group_church_manager"/>
+
+
+    <!-- Submenus -->
+    <menuitem id="menu_church_members"
+              name="Members list"
+              parent="menu_church_members_main"
+              action="action_church_members"
+              sequence="10"/>
+
+    <!-- Attendance Submenus -->
+    <menuitem id="menu_church_attendance"
+              name="Attendance sessions"
+              parent="menu_church_attendance_main"
+              action="action_church_attendance"
+              sequence="10"/>
+
+    <menuitem id="menu_church_attendance_type"
+              name="Attendance types"
+              parent="menu_church_config"
+              action="action_church_attendance_type"
+              sequence="40"/>
+</odoo>

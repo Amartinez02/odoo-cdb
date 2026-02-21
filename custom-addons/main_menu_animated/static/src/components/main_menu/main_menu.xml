@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates>
+    <t t-name="main_menu_animated.MainMenu">
+        <div class="background"/>
+        <div class="main-menu">
+            <div class="widgets" t-if="showWidgets">
+                <WidgetHour
+                    userIsAdmin="userIsAdmin"
+                    announcement="announcement"/>
+                <WidgetAnnouncement
+                    userIsAdmin="userIsAdmin"
+                    announcement="announcement"
+                    onChangeAnnouncement.bind="onChangeAnnouncement"
+                    onSaveAnnouncement.bind="onSaveAnnouncement"/>
+            </div>
+            <div class="apps-container">
+                <t t-foreach="state.apps" t-as="app" t-key="app.id">
+                    <a t-on-click="() => this.onClickModule(app)"
+                       draggable="true"
+                       t-on-dragstart="(ev) => this.onDragStart(ev, app)"
+                       t-on-dragover="(ev) => this.onDragOver(ev)"
+                       t-on-drop="(ev) => this.onDrop(ev, app)"
+                       t-on-dragend="(ev) => this.onDragEnd(ev)">
+                        <img t-if="app.webIcon" class="module-icon" t-attf-src="{{app.webIconData}}"/>
+                        <img t-if="!app.webIcon" class="module-icon" src="/main_menu_animated/static/src/img/default_icon.png"/>
+                        <p t-esc="app.name" class="text-white fs-5 text-truncate"/>
+                     </a>
+                </t>
+             </div>
+        </div>
+    </t>
+</templates>

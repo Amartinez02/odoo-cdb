@@ -1,0 +1,171 @@
+/* 
+ * Casa de Bendición - Global Odoo Theme Overrides 
+ * Injected via main_menu_animated 
+ */
+
+:root {
+    --cdb-primary: #6b1520;
+    --cdb-primary-hover: #8b2030;
+    --cdb-primary-active: #4a0d15;
+    --cdb-border: #ced4da;
+    --cdb-border-focus: #b25864;
+    --cdb-input-bg: #ffffff;
+    --cdb-table-zebra: rgba(0, 0, 0, 0.03);
+    
+    /* Native Odoo navbar variables (v16+) */
+    --o-navbar-background: #6b1520 !important;
+    --o-navbar-text: #ffffff !important;
+}
+
+/* ── BUTTONS ─────────────────────────────────────────────────────── */
+.btn-primary, 
+.o_button_import,
+.o_form_button_save,
+.o_list_button_add {
+    background-color: var(--cdb-primary) !important;
+    border-color: var(--cdb-primary) !important;
+    color: #ffffff !important;
+    border-radius: 6px !important;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-primary:hover, 
+.o_button_import:hover,
+.o_form_button_save:hover,
+.o_list_button_add:hover {
+    background-color: var(--cdb-primary-hover) !important;
+    border-color: var(--cdb-primary-hover) !important;
+}
+
+.btn-primary:active, 
+.o_button_import:active,
+.o_form_button_save:active,
+.o_list_button_add:active {
+    background-color: var(--cdb-primary-active) !important;
+    border-color: var(--cdb-primary-active) !important;
+}
+
+/* Secondary Buttons */
+.btn-secondary,
+.o_form_button_cancel,
+.o_list_button_discard {
+    background-color: #f8f9fa !important;
+    border-color: var(--cdb-border) !important;
+    color: #343a40 !important;
+    border-radius: 6px !important;
+}
+.btn-secondary:hover,
+.o_form_button_cancel:hover,
+.o_list_button_discard:hover {
+    background-color: #e2e6ea !important;
+    border-color: #dae0e5 !important;
+}
+
+/* ── INPUTS ──────────────────────────────────────────────────────── */
+/* Odoo uses .o_input for almost all inputs, textareas, and selects */
+.o_input, 
+input[type="text"], 
+input[type="password"], 
+input[type="email"], 
+input[type="number"], 
+textarea, 
+select {
+    border: 1px solid var(--cdb-border) !important;
+    border-radius: 6px !important;
+    background-color: var(--cdb-input-bg) !important;
+    padding: 6px 10px !important;
+    box-shadow: none !important;
+    transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out !important;
+    /* Reset Odoo's default bottom-only border */
+    border-bottom: 1px solid var(--cdb-border) !important; 
+}
+
+/* Focus State */
+.o_input:focus, 
+input[type="text"]:focus, 
+input[type="password"]:focus, 
+input[type="email"]:focus, 
+input[type="number"]:focus, 
+textarea:focus, 
+select:focus {
+    border-color: var(--cdb-border-focus) !important;
+    outline: 0 !important;
+    box-shadow: 0 0 0 0.2rem rgba(107, 21, 32, 0.15) !important;
+}
+
+/* Form View Specific Adjustments */
+.o_form_view .o_field_widget {
+    margin-bottom: 4px;
+}
+/* Ensure the inner input element spans correctly without looking double-bordered if wrapped */
+.o_form_view .o_field_widget > .o_input {
+    width: 100%;
+}
+
+/* ── TABLES (ZEBRA) ──────────────────────────────────────────────── */
+/* Apply zebra striping to Odoo list views */
+.o_list_table tbody tr:nth-of-type(odd) {
+    background-color: #ffffff !important;
+}
+
+.o_list_table tbody tr:nth-of-type(even) {
+    background-color: var(--cdb-table-zebra) !important;
+}
+
+/* Hover effect on table rows */
+.o_list_table tbody tr:hover {
+    background-color: rgba(107, 21, 32, 0.05) !important; /* Very subtle primary tint on hover */
+}
+
+/* Table Headers */
+.o_list_table thead th {
+    background-color: #f1f3f5 !important;
+    border-bottom: 2px solid var(--cdb-border) !important;
+    color: #495057 !important;
+    font-weight: 600 !important;
+    padding: 10px 8px !important;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.03em;
+}
+
+/* Remove default vertical borders if any, for a cleaner look */
+.o_list_table th, .o_list_table td {
+    border-left: none !important;
+    border-right: none !important;
+}
+
+header,
+.o_navbar,
+header.o_navbar,
+.o_main_navbar,
+body .o_web_client header.o_navbar,
+body .o_web_client .o_main_navbar {
+    background-color: var(--cdb-primary) !important;
+    background: var(--cdb-primary) !important; /* fallback */
+    border-bottom: 1px solid var(--cdb-primary-active) !important;
+}
+
+/* Remove purple from inner menu sections */
+.o_main_navbar .o_menu_sections,
+.o_main_navbar .o_menu_brand,
+.o_main_navbar .o_menu_apps,
+.o_main_navbar .dropdown-menu {
+    background-color: transparent !important;
+}
+.o_main_navbar .o_menu_sections .o_nav_entry:hover,
+.o_main_navbar .o_menu_sections .dropdown-item:hover,
+.o_main_navbar .o_menu_brand:hover {
+    background-color: rgba(255, 255, 255, 0.15) !important;
+}
+
+/* Ensure navbar text/icons remain visible on dark red */
+header.o_navbar .dropdown-toggle,
+header.o_navbar .o_nav_entry,
+header.o_navbar .fa,
+header.o_navbar .o_menu_brand {
+    color: #ffffff !important;
+}
+header.o_navbar .dropdown-menu {
+    border-color: var(--cdb-primary) !important;
+}

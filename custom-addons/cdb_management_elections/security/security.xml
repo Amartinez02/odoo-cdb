@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Elections Manager group -->
+        <record id="group_cdb_elections_manager" model="res.groups">
+            <field name="name">Elections Manager</field>
+            <field name="implied_ids" eval="[(4, ref('cdb_management.group_church_user'))]"/>
+            <field name="comment">
+                Can create/edit elections, manage candidates,
+                open/close/publish elections, and add/subtract votes.
+            </field>
+        </record>
+
+        <!-- Elections Viewer group -->
+        <record id="group_cdb_elections_viewer" model="res.groups">
+            <field name="name">Elections Viewer</field>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+            <field name="comment">Can only view election results.</field>
+        </record>
+    </data>
+</odoo>

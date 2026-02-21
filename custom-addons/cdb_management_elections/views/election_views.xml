@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ══════════════════════════════════════════════════════════════
+         cdb.election – List View
+         ══════════════════════════════════════════════════════════════ -->
+    <record id="view_cdb_election_list" model="ir.ui.view">
+        <field name="name">cdb.election.list</field>
+        <field name="model">cdb.election</field>
+        <field name="arch" type="xml">
+            <list string="Elections" decoration-info="state == 'draft'"
+                  decoration-success="state == 'open'"
+                  decoration-warning="state == 'closed'"
+                  decoration-muted="state == 'published'">
+                <field name="name"/>
+                <field name="date_start"/>
+                <field name="date_end"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'draft'"
+                       decoration-success="state == 'open'"
+                       decoration-warning="state == 'closed'"
+                       decoration-muted="state == 'published'"/>
+                <field name="total_candidates"/>
+                <field name="total_votes"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ══════════════════════════════════════════════════════════════
+         cdb.election – Form View
+         ══════════════════════════════════════════════════════════════ -->
+    <record id="view_cdb_election_form" model="ir.ui.view">
+        <field name="name">cdb.election.form</field>
+        <field name="model">cdb.election</field>
+        <field name="arch" type="xml">
+            <form string="Election">
+                <header>
+                    <button name="action_open" type="object"
+                            string="Open voting"
+                            class="btn-primary"
+                            invisible="state != 'draft'"
+                            confirm="This will open the election for voting. Continue?"/>
+                    <button name="action_close" type="object"
+                            string="Close voting"
+                            class="btn-warning"
+                            invisible="state != 'open'"
+                            confirm="This will close voting and compute winners. Continue?"/>
+                    <button name="action_publish" type="object"
+                            string="Publish results"
+                            class="btn-success"
+                            invisible="state != 'closed'"
+                            confirm="Publish results? The results page will be accessible."/>
+                    <button name="action_reset_draft" type="object"
+                            string="Reset to draft"
+                            class="btn-secondary"
+                            invisible="state == 'draft'"
+                            confirm="Reset to draft? Winner flags will be cleared."/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,open,closed,published"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" type="object"
+                                name="action_view_live" icon="fa-tv"
+                                invisible="state not in ('open', 'closed', 'published')">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Live board</span>
+                            </div>
+                        </button>
+                        <button class="oe_stat_button" type="object"
+                                name="action_view_results" icon="fa-trophy"
+                                invisible="state != 'published'">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Results page</span>
+                            </div>
+                        </button>
+                        <button class="oe_stat_button" icon="fa-users"
+                                type="object" name="action_view_live">
+                            <field name="total_candidates" widget="statinfo"
+                                   string="Candidates"/>
+                        </button>
+                        <button class="oe_stat_button" icon="fa-check-square"
+                                type="object" name="action_view_live">
+                            <field name="total_votes" widget="statinfo"
+                                   string="Votes"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <label for="name" string="Election name"/>
+                            <field name="name"
+                                   readonly="state != 'draft'" class="oe_inline"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <!-- ── Positions Tab ─────────────────────── -->
+                        <page string="Positions" name="positions">
+                            <field name="position_ids"
+                                   readonly="state not in ('draft',)">
+                                <list editable="bottom">
+                                    <field name="sequence"
+                                           widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="winners_count"/>
+                                    <field name="total_position_votes"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <!-- ── Candidates Tab ────────────────────── -->
+                        <page string="Candidates" name="candidates">
+                            <field name="candidate_ids"
+                                   readonly="state == 'published'">
+                                <list editable="bottom"
+                                      decoration-success="is_winner"
+                                      default_order="position_id">
+                                    <field name="election_state"
+                                           column_invisible="1"/>
+                                    <field name="partner_id"
+                                           widget="many2one_avatar"
+                                           readonly="election_state != 'draft'"/>
+                                    <field name="position_id"
+                                           decoration-info="1"
+                                           decoration-bf="1"
+                                           readonly="election_state != 'draft'"/>
+                                    <field name="votes"
+                                           decoration-bf="1"
+                                           readonly="1"/>
+                                    <field name="percentage"
+                                           widget="progressbar"/>
+                                    <field name="winner_rank"
+                                           widget="badge"
+                                           readonly="1"
+                                           invisible="election_state not in ('closed', 'published')"/>
+                                    <field name="is_winner"
+                                           widget="boolean_toggle"
+                                           invisible="election_state not in ('closed', 'published')"/>
+                                    <button name="action_add_vote"
+                                            type="object"
+                                            string=" +1 voto"
+                                            class="btn-success"
+                                            icon="fa-plus-circle"
+                                            invisible="election_state != 'open'"/>
+                                    <button name="action_subtract_vote"
+                                            type="object"
+                                            string=" -1 voto"
+                                            class="btn-danger"
+                                            icon="fa-minus-circle"
+                                            invisible="election_state != 'open'"/>
+                                    <field name="election_id"
+                                           column_invisible="1"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <!-- ── Description Tab ───────────────────── -->
+                        <page string="Description" name="description">
+                            <field name="description"
+                                   placeholder="Additional notes about this election..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- ══════════════════════════════════════════════════════════════
+         Action
+         ══════════════════════════════════════════════════════════════ -->
+    <record id="action_cdb_election" model="ir.actions.act_window">
+        <field name="name">Elections</field>
+        <field name="res_model">cdb.election</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first election
+            </p>
+            <p>
+                Organize church elections with positions, candidates,
+                real-time voting, and published results.
+            </p>
+        </field>
+    </record>
+
+</odoo>

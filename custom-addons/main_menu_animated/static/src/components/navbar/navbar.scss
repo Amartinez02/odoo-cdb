@@ -1,0 +1,407 @@
+/* 
+ * Casa de Bendición - THEME OVERRIDE vFINAL+++++++
+ * Odoo 18.0e - No-Native-Purple / No-Black-Icons
+ * Precision Fix: Premium Chatter & Search Bar Restoration
+ */
+
+:root {
+    --cdb-primary: #6b1520;
+    --cdb-primary-hover: #8b2030;
+    --cdb-primary-active: #58111a;
+    --cdb-white: #ffffff;
+    
+    /* Native Odoo Variable Force */
+    --o-navbar-background: #6b1520 !important;
+    --o-navbar-text: #ffffff !important;
+    --o-brand-odoo: #ffffff !important;
+    --o-btn-primary-bg: #ffffff !important;
+    --o-btn-primary-color: #6b1520 !important;
+    --o-btn-primary-border: #ffffff !important;
+    --o-actionbar-background: #6b1520 !important;
+    --o-control-panel-background: #6b1520 !important;
+}
+
+/* ── NAVBAR (TOP) ────────────────────────────────────────────────── */
+
+body .o_navbar, body .o_main_navbar {
+    background-color: var(--cdb-primary) !important;
+    background: var(--cdb-primary) !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1) !important;
+    height: 60px !important;
+}
+
+/* KILL PURPLE ON NAVBAR BUTTONS & SESSIONS */
+body .o_main_navbar .o-dropdown,
+body .o_main_navbar .dropdown-toggle,
+body .o_main_navbar .o_navbar_apps_menu button,
+body .o_main_navbar .o_menu_sections button,
+body .o_main_navbar .o_menu_sections a,
+body .o_main_navbar .o_menu_sections .o_nav_entry,
+body .o_main_navbar .o_menu_systray button {
+    background-color: transparent !important;
+    color: #ffffff !important;
+    border: none !important;
+}
+
+/* Fix the purple highlight (Settings menu item active state) */
+body .o_main_navbar .o_menu_sections .active,
+body .o_main_navbar .o_menu_sections .dropdown-item.active,
+body .o_main_navbar .o_menu_sections .o_nav_entry.active,
+body .o_main_navbar .o_menu_sections a.active,
+body .o_main_navbar .o_menu_sections button.active,
+body .o_main_navbar .o_menu_sections .o-dropdown.active {
+    background-color: rgba(255, 255, 255, 0.2) !important;
+    color: #ffffff !important;
+    border-radius: 4px !important;
+}
+
+body .o_main_navbar .o_menu_sections button:hover,
+body .o_main_navbar .o_menu_sections a:hover,
+body .o_main_navbar .o_menu_sections button.active,
+body .o_main_navbar .o_menu_sections button[aria-expanded="true"] {
+    background-color: rgba(255, 255, 255, 0.15) !important;
+    border-radius: 4px !important;
+}
+
+/* Icons to White */
+body .o_main_navbar i, body .o_main_navbar .fa, body .o_main_navbar .oi {
+    color: #ffffff !important;
+}
+
+/* ── APP SWITCHER (HOME MENU) ─────────────────────────────────── */
+
+/* Force Navbar Visibility in Home Menu */
+body.o_home_menu_active .o_navbar {
+    display: flex !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    z-index: 100 !important;
+}
+
+body.o_home_menu_active .o_home_menu {
+    margin-top: 60px !important;
+    background: radial-gradient(circle at center, rgba(107, 21, 32, 0.85) 0%, rgba(10, 10, 10, 1) 100%) !important;
+}
+
+/* Enlarge and group icons */
+body .o_home_menu .o_apps {
+    gap: 25px !important;
+    max-width: 950px !important;
+}
+
+body .o_home_menu .o_app {
+    width: 115px !important;
+}
+
+body .o_home_menu .o_app_icon {
+    width: 95px !important;
+    height: 95px !important;
+    border-radius: 20px !important;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.4) !important;
+}
+
+body .o_home_menu .o_app:hover .o_app_icon {
+    transform: scale(1.1) !important;
+    box-shadow: 0 15px 30px rgba(107, 21, 32, 0.4) !important;
+}
+
+body .o_home_menu .o_caption {
+    font-size: 1rem !important;
+    font-weight: 700 !important;
+    color: #ffffff !important;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5) !important;
+}
+
+/* ── CONTROL PANEL & SEARCH BAR RESTORATION ───────────────────── */
+
+body .o_control_panel {
+    background-color: var(--cdb-primary) !important;
+    background: var(--cdb-primary) !important;
+    color: #ffffff !important;
+    border: none !important;
+}
+
+body .o_cp_searchview {
+    background: transparent !important;
+    border: none !important;
+}
+
+/* THE INPUT AREA (Left side) */
+body .o_control_panel .o_searchview {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    border-right: none !important;
+    border-radius: 8px 0 0 8px !important;
+    padding: 2px 12px !important;
+}
+
+body .o_control_panel .o_searchview_input_container,
+body .o_control_panel .o_searchview_input {
+    background-color: transparent !important;
+    background: transparent !important;
+    color: #ffffff !important;
+    border: none !important;
+}
+
+/* THE DROPDOWN TOGGLER (Right side) */
+body .o_control_panel .o_searchview_dropdown_toggler {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    border-left: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 0 8px 8px 0 !important;
+    color: #ffffff !important;
+}
+
+/* Icons, Carets and Gear Cog */
+body .o_control_panel .o_searchview_icon,
+body .o_control_panel .o_searchview button i,
+body .o_control_panel .o-dropdown-caret::after,
+body .o_control_panel .fa-cog,
+body .o_control_panel .oi-settings,
+body .o_control_panel .o_cp_action_menus i,
+body .o_control_panel .o_cp_action_menus button i,
+body .o_control_panel .dropdown-toggle i {
+    color: #ffffff !important;
+    opacity: 1 !important;
+}
+
+/* TRANSPARENCY: Force internal containers to show parent background */
+body .o_control_panel .o_control_panel_main,
+body .o_control_panel .o_control_panel_navigation,
+body .o_control_panel .o_control_panel_actions,
+body .o_control_panel .o_breadcrumb,
+body .o_control_panel .breadcrumb,
+body .o_control_panel .breadcrumb-item,
+body .o_control_panel .o_form_status_indicator,
+body .o_control_panel .o_form_status_indicator_buttons,
+body .o_control_panel .oe_button_box,
+body .o_control_panel .o_cp_pager {
+    background-color: transparent !important;
+    background: transparent !important;
+    border: none !important;
+}
+
+/* BREADCRUMBS FORCE WHITE */
+body .o_control_panel .breadcrumb-item,
+body .o_control_panel .breadcrumb-item a,
+body .o_control_panel .o_back_button,
+body .o_control_panel .o_back_button a,
+body .o_control_panel .o_last_breadcrumb_item,
+body .o_control_panel .o_last_breadcrumb_item span {
+    color: #ffffff !important;
+    opacity: 1 !important;
+    text-decoration: none !important;
+}
+
+/* ── BUTTONS REFINEMENT ────────────────────────────────────────── */
+
+/* Combined action buttons (Nuevo, Guardar, Cancelar) */
+body .o_control_panel .btn-primary,
+body .o_control_panel .btn-outline-primary,
+body .o_list_button_add,
+body .o_form_button_create,
+body .o_form_button_save,
+body .o_form_button_cancel {
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+    color: var(--cdb-primary) !important;
+    border: none !important;
+    font-weight: 800 !important;
+    margin: 0 4px !important;
+    border-radius: 6px !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2) !important;
+    padding: 6px 14px !important;
+    text-transform: none !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-width: 38px !important;
+    height: 34px !important;
+}
+
+/* ── STAT BUTTONS (GLASSMORPHISM) ─────────────────────────────── */
+
+body .o_control_panel .oe_stat_button {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    color: #ffffff !important;
+    border-radius: 6px !important;
+    margin: 0 4px !important;
+    transition: all 0.2s ease !important;
+    height: 34px !important;
+    display: flex !important;
+    align-items: center !important;
+    padding: 0 10px !important;
+}
+
+body .o_control_panel .oe_stat_button:hover {
+    background: rgba(255, 255, 255, 0.2) !important;
+    transform: translateY(-1px) !important;
+}
+
+body .o_control_panel .oe_stat_button i,
+body .o_control_panel .oe_stat_button .o_button_icon,
+body .o_control_panel .oe_stat_button .o_stat_info,
+body .o_control_panel .oe_stat_button .o_stat_text,
+body .o_control_panel .oe_stat_button .o_stat_value {
+    color: #ffffff !important;
+    opacity: 1 !important;
+}
+
+body .o_control_panel .oe_stat_button .o_stat_info {
+    font-size: 0.75rem !important;
+    font-weight: 700 !important;
+    line-height: 1 !important;
+}
+
+/* Specific fix for Save/Cancel icons appearing as white-on-white */
+body .o_control_panel .o_form_button_save i,
+body .o_control_panel .o_form_button_cancel i,
+body .o_control_panel .o_form_status_indicator_buttons button i {
+    color: var(--cdb-primary) !important;
+    opacity: 1 !important;
+}
+
+
+/* ── SEARCH PANEL (LEFT DRAWER) STYLING ────────────────────────── */
+
+body .o_search_panel {
+    background-color: var(--cdb-primary) !important;
+    background: linear-gradient(180deg, var(--cdb-primary) 0%, #4a0d15 100%) !important;
+    border-right: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: #ffffff !important;
+    padding: 15px 10px !important;
+    box-shadow: inset -5px 0 15px rgba(0,0,0,0.1) !important;
+}
+
+/* Section Headers */
+body .o_search_panel .o_search_panel_section_header {
+    background: transparent !important;
+    color: rgba(255, 255, 255, 0.8) !important;
+    border: none !important;
+    text-transform: uppercase !important;
+    font-size: 0.75rem !important;
+    letter-spacing: 1.2px !important;
+    font-weight: 800 !important;
+    margin-top: 20px !important;
+    padding-left: 10px !important;
+}
+
+body .o_search_panel .o_search_panel_section_icon {
+    color: #ffffff !important;
+    opacity: 0.9 !important;
+    margin-right: 8px !important;
+}
+
+/* Items & Spacing (Kill white lines/borders) */
+body .o_search_panel .list-group-item {
+    background: transparent !important;
+    border: none !important; 
+    padding: 2px 0 !important;
+    margin-bottom: 2px !important;
+}
+
+body .o_search_panel .list-group-item-action {
+    background: transparent !important;
+    border: none !important;
+    color: rgba(255, 255, 255, 0.7) !important;
+    border-radius: 8px !important;
+    padding: 8px 12px !important;
+    transition: all 0.2s ease !important;
+}
+
+body .o_search_panel .list-group-item-action:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+    color: #ffffff !important;
+    transform: translateX(3px) !important;
+}
+
+/* Active State (Glassmorphism Elevated) */
+body .o_search_panel .list-group-item-action.active {
+    background-color: #ffffff !important;
+    color: var(--cdb-primary) !important;
+    font-weight: 800 !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2) !important;
+    transform: none !important;
+}
+
+/* Counter Badges */
+body .o_search_panel .o_search_panel_counter {
+    background: rgba(255, 255, 255, 0.15) !important;
+    color: #ffffff !important;
+    border-radius: 20px !important;
+    padding: 2px 8px !important;
+    font-size: 0.7rem !important;
+    font-weight: 800 !important;
+}
+
+body .o_search_panel .list-group-item-action.active .o_search_panel_counter {
+    background: var(--cdb-primary) !important;
+    color: #ffffff !important;
+}
+
+/* Collapse Arrow Fix */
+body .o_search_panel .o_toggle_fold {
+    color: #ffffff !important;
+    opacity: 0.5 !important;
+}
+
+body .o_search_panel .list-group-item-action:hover .o_toggle_fold,
+body .o_search_panel .list-group-item-action.active .o_toggle_fold {
+    opacity: 1 !important;
+}
+
+body .o_search_panel .list-group-item-action.active .o_toggle_fold {
+    color: var(--cdb-primary) !important;
+}
+
+/* Close Button Fix */
+body .o_search_panel button.btn-light {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    color: #ffffff !important;
+}
+
+/* ── KANBAN VIEW & CARDS REDESIGN ──────────────────────────────── */
+
+body .o_kanban_renderer {
+    background-color: #f8f9fa !important;
+    padding: 15px !important;
+}
+
+body .o_kanban_renderer .o_kanban_record:not(.o_kanban_ghost) {
+    background: #ffffff !important;
+    border: none !important;
+    border-radius: 12px !important;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05) !important;
+    padding: 20px !important;
+}
+
+body .o_kanban_renderer .o_kanban_ghost {
+    visibility: hidden !important;
+    height: 0 !important;
+}
+
+/* ── PREMIUM LIST TABLE STYLING ────────────────────────────────── */
+
+body .o_list_table {
+    border: none !important;
+    border-collapse: separate !important;
+    border-spacing: 0 !important;
+    background: #ffffff !important;
+    border-radius: 8px !important;
+}
+
+/* ── MISC ───────────────────────────────────────────────────────── */
+
+/* switches */
+body .form-check-input:checked {
+    background-color: var(--cdb-primary) !important;
+    border-color: var(--cdb-primary) !important;
+}
+
+/* Hide Duplicated Company Avatar */
+body .o_switch_company_menu .o_avatar,
+body .o_switch_company_menu .fa-building {
+    display: none !important;
+}

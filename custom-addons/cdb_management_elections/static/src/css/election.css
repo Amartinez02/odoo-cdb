@@ -1,0 +1,511 @@
+/* ══════════════════════════════════════════════════════════════
+   CDB Elections – Live Board & Results Styles
+   ══════════════════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+:root {
+    --cdb-primary: #1a237e;
+    --cdb-primary-light: #283593;
+    --cdb-accent: #f9a825;
+    --cdb-accent-glow: rgba(249, 168, 37, 0.3);
+    --cdb-success: #2e7d32;
+    --cdb-success-light: #e8f5e9;
+    --cdb-bg: #0d1117;
+    --cdb-surface: #161b22;
+    --cdb-surface-hover: #1c2333;
+    --cdb-border: #30363d;
+    --cdb-text: #e6edf3;
+    --cdb-text-muted: #8b949e;
+    --cdb-card-radius: 16px;
+    --cdb-row-radius: 12px;
+    --cdb-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+/* ── Global ────────────────────────────────────────────────── */
+
+.cdb-election-board,
+.cdb-results-page {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: var(--cdb-bg);
+    color: var(--cdb-text);
+    min-height: 100vh;
+}
+
+/* ── Live Board Header ─────────────────────────────────────── */
+
+.cdb-board-header {
+    background: linear-gradient(135deg, var(--cdb-primary) 0%, var(--cdb-primary-light) 100%);
+    padding: 2rem 0;
+    margin-bottom: 2rem;
+    box-shadow: var(--cdb-shadow);
+}
+
+.cdb-logo,
+.cdb-results-logo {
+    max-height: 64px;
+    border-radius: 8px;
+}
+
+.cdb-board-title {
+    font-weight: 800;
+    font-size: 2rem;
+    margin: 0;
+    letter-spacing: -0.5px;
+}
+
+.cdb-board-meta {
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+/* ── Badges ────────────────────────────────────────────────── */
+
+.cdb-badge {
+    display: inline-block;
+    padding: 0.35em 0.9em;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+}
+
+.cdb-badge-draft {
+    background: rgba(255, 255, 255, 0.15);
+    color: #ccc;
+}
+.cdb-badge-open {
+    background: rgba(46, 125, 50, 0.25);
+    color: #66bb6a;
+    border: 1px solid rgba(46, 125, 50, 0.4);
+    animation: cdb-pulse 2s infinite;
+}
+.cdb-badge-closed {
+    background: rgba(198, 40, 40, 0.25);
+    color: #ef5350;
+    border: 1px solid rgba(198, 40, 40, 0.4);
+}
+.cdb-badge-published {
+    background: rgba(249, 168, 37, 0.2);
+    color: var(--cdb-accent);
+    border: 1px solid rgba(249, 168, 37, 0.35);
+}
+
+@keyframes cdb-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(46, 125, 50, 0.4); }
+    50% { box-shadow: 0 0 0 6px rgba(46, 125, 50, 0); }
+}
+
+.cdb-total-votes {
+    color: var(--cdb-text-muted);
+    font-size: 0.9rem;
+}
+
+/* ── Position Cards ────────────────────────────────────────── */
+
+.cdb-positions-container {
+    padding-bottom: 3rem;
+}
+
+.cdb-position-card {
+    background: var(--cdb-surface);
+    border: 1px solid var(--cdb-border);
+    border-radius: var(--cdb-card-radius);
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+    box-shadow: var(--cdb-shadow);
+    transition: transform 0.2s ease;
+}
+
+.cdb-position-card:hover {
+    transform: translateY(-2px);
+}
+
+.cdb-position-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem 1.5rem;
+    background: linear-gradient(90deg, rgba(26, 35, 126, 0.3) 0%, transparent 100%);
+    border-bottom: 1px solid var(--cdb-border);
+}
+
+.cdb-position-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin: 0;
+    letter-spacing: -0.3px;
+}
+
+.cdb-winners-badge {
+    background: rgba(249, 168, 37, 0.15);
+    color: var(--cdb-accent);
+    padding: 0.3em 0.8em;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+/* ── Candidate Rows ────────────────────────────────────────── */
+
+.cdb-candidates-list {
+    padding: 0.5rem;
+}
+
+.cdb-candidate-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.85rem 1rem;
+    border-radius: var(--cdb-row-radius);
+    transition: background 0.2s ease;
+    margin-bottom: 4px;
+}
+
+.cdb-candidate-row:hover {
+    background: var(--cdb-surface-hover);
+}
+
+.cdb-candidate-winner {
+    background: rgba(46, 125, 50, 0.08) !important;
+    border: 1px solid rgba(46, 125, 50, 0.2);
+}
+
+.cdb-candidate-rank {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--cdb-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+.cdb-candidate-winner .cdb-candidate-rank {
+    background: var(--cdb-accent);
+    color: #000;
+}
+
+.cdb-candidate-avatar {
+    flex-shrink: 0;
+}
+
+.cdb-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--cdb-border);
+}
+
+.cdb-candidate-winner .cdb-avatar {
+    border-color: var(--cdb-accent);
+    box-shadow: 0 0 12px var(--cdb-accent-glow);
+}
+
+.cdb-candidate-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.cdb-candidate-name {
+    font-weight: 600;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.cdb-winner-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--cdb-success);
+    color: #fff;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* ── Progress Bar ──────────────────────────────────────────── */
+
+.cdb-candidate-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 6px;
+}
+
+.cdb-progress-track {
+    flex: 1;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.cdb-progress-fill {
+    height: 100%;
+    border-radius: 3px;
+    background: linear-gradient(90deg, #3f51b5 0%, #7c4dff 100%);
+    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    min-width: 2px;
+}
+
+.cdb-candidate-winner .cdb-progress-fill {
+    background: linear-gradient(90deg, var(--cdb-success) 0%, #66bb6a 100%);
+}
+
+.cdb-candidate-pct {
+    font-size: 0.8rem;
+    color: var(--cdb-text-muted);
+    font-weight: 600;
+    min-width: 40px;
+    text-align: right;
+}
+
+/* ── Votes Count ───────────────────────────────────────────── */
+
+.cdb-candidate-votes {
+    text-align: center;
+    flex-shrink: 0;
+    min-width: 50px;
+}
+
+.cdb-votes-count {
+    display: block;
+    font-size: 1.4rem;
+    font-weight: 800;
+    line-height: 1;
+    color: var(--cdb-text);
+}
+
+.cdb-candidate-votes small {
+    font-size: 0.65rem;
+    color: var(--cdb-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* ── Position Footer ───────────────────────────────────────── */
+
+.cdb-position-footer {
+    padding: 0.75rem 1.5rem;
+    border-top: 1px solid var(--cdb-border);
+    font-size: 0.8rem;
+    color: var(--cdb-text-muted);
+    text-align: right;
+}
+
+/* ── Board Footer ──────────────────────────────────────────── */
+
+.cdb-board-footer {
+    padding: 2rem 0;
+    color: var(--cdb-text-muted);
+    font-size: 0.85rem;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Results Page
+   ══════════════════════════════════════════════════════════════ */
+
+.cdb-results-header {
+    background: linear-gradient(135deg, var(--cdb-primary) 0%, #0d47a1 50%, var(--cdb-primary-light) 100%);
+    padding: 3rem 0 2.5rem;
+    margin-bottom: 2.5rem;
+}
+
+.cdb-results-main-title {
+    font-weight: 800;
+    font-size: 1.8rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--cdb-accent);
+    margin-bottom: 0.3rem;
+}
+
+.cdb-results-election-name {
+    font-weight: 600;
+    font-size: 1.4rem;
+    margin-bottom: 0.5rem;
+}
+
+.cdb-results-date {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+}
+
+.cdb-results-body {
+    padding-bottom: 2rem;
+}
+
+/* ── Result Cards ──────────────────────────────────────────── */
+
+.cdb-result-card {
+    background: var(--cdb-surface);
+    border: 1px solid var(--cdb-border);
+    border-radius: var(--cdb-card-radius);
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+    box-shadow: var(--cdb-shadow);
+}
+
+.cdb-result-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem 1.5rem;
+    background: linear-gradient(90deg, rgba(26, 35, 126, 0.25) 0%, transparent 100%);
+    border-bottom: 1px solid var(--cdb-border);
+}
+
+.cdb-result-card-header h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+.cdb-result-card-header h3 i {
+    margin-right: 0.5rem;
+    color: var(--cdb-accent);
+}
+
+.cdb-result-total {
+    color: var(--cdb-text-muted);
+    font-size: 0.85rem;
+}
+
+.cdb-result-card-body {
+    padding: 0.5rem 1rem;
+}
+
+.cdb-result-row {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 0.75rem 0.5rem;
+    border-radius: var(--cdb-row-radius);
+    margin-bottom: 2px;
+}
+
+.cdb-result-winner {
+    background: rgba(46, 125, 50, 0.08);
+    border: 1px solid rgba(46, 125, 50, 0.15);
+}
+
+.cdb-result-rank {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--cdb-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.85rem;
+}
+
+.cdb-result-winner .cdb-result-rank {
+    background: var(--cdb-accent);
+    color: #000;
+}
+
+.cdb-result-avatar {
+    flex-shrink: 0;
+}
+
+.cdb-result-info {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+}
+
+.cdb-result-name {
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.cdb-result-stats {
+    text-align: right;
+    flex-shrink: 0;
+}
+
+.cdb-result-votes {
+    font-weight: 700;
+    font-size: 0.95rem;
+}
+
+.cdb-result-pct {
+    color: var(--cdb-text-muted);
+    font-size: 0.8rem;
+    margin-left: 0.3rem;
+}
+
+/* ── Results Footer ────────────────────────────────────────── */
+
+.cdb-results-footer {
+    padding: 2rem 0 3rem;
+    color: var(--cdb-text-muted);
+}
+
+.cdb-results-footer hr {
+    border-color: var(--cdb-border);
+    margin-bottom: 1.5rem;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Responsive
+   ══════════════════════════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+    .cdb-board-title {
+        font-size: 1.4rem;
+    }
+    .cdb-position-title {
+        font-size: 1.1rem;
+    }
+    .cdb-candidate-row,
+    .cdb-result-row {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+    .cdb-candidate-info,
+    .cdb-result-info {
+        min-width: 60%;
+    }
+    .cdb-candidate-votes {
+        min-width: auto;
+    }
+    .cdb-candidate-avatar,
+    .cdb-result-avatar {
+        display: none;
+    }
+    .cdb-logo {
+        max-height: 48px;
+    }
+}
+
+/* ── Vote update animation ─────────────────────────────────── */
+
+@keyframes cdb-vote-flash {
+    0% { background: rgba(249, 168, 37, 0.3); }
+    100% { background: transparent; }
+}
+
+.cdb-vote-updated {
+    animation: cdb-vote-flash 0.8s ease-out;
+}

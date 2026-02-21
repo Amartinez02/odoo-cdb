@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Elections submenu under Church root -->
+    <menuitem id="menu_church_elections_main"
+              name="Elections"
+              parent="cdb_management.menu_church_root"
+              sequence="30"/>
+
+    <menuitem id="menu_cdb_elections"
+              name="Elections"
+              parent="menu_church_elections_main"
+              action="action_cdb_election"
+              sequence="10"/>
+</odoo>

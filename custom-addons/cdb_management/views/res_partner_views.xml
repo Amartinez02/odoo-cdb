@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Church Member List View -->
+    <record id="view_partner_church_list" model="ir.ui.view">
+        <field name="name">res.partner.church.list</field>
+        <field name="model">res.partner</field>
+        <field name="arch" type="xml">
+            <list string="Church members" limit="300" multi_edit="1">
+                <field name="name"/>
+                <field name="x_age"/>
+                <field name="x_gender"/>
+                <field name="phone"/>
+                <field name="mobile"/>
+                <field name="email"/>
+                <field name="x_sector"/>
+                <field name="x_baptized" widget="boolean_toggle"/>
+                <field name="active" widget="boolean_toggle"/>
+                <field name="x_church_entry_date"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Church Member Form View -->
+    <record id="view_partner_church_form" model="ir.ui.view">
+        <field name="name">res.partner.church.form</field>
+        <field name="model">res.partner</field>
+        <field name="arch" type="xml">
+            <form string="Church member">
+                <sheet>
+                    <div class="oe_button_box" name="button_box"/>
+                    <widget name="web_ribbon" title="Baptized" bg_color="bg-success" invisible="not x_baptized"/>
+                    <div class="d-flex align-items-center mb-3">
+                        <field name="image_1920" widget="image" class="oe_avatar me-3" options="{'preview_image': 'image_128'}"/>
+                        <div class="oe_title flex-grow-1">
+                            <h1>
+                                <div class="d-flex gap-2 w-100">
+                                    <field name="x_first_name" placeholder="First name" class="w-50" default_focus="1" required="company_type == 'person' and x_is_church_member"/>
+                                    <field name="x_last_name" placeholder="Last name" class="w-50" required="company_type == 'person' and x_is_church_member"/>
+                                </div>
+                                <field name="name" invisible="1"/>
+                            </h1>
+                            <div class="d-flex align-items-center">
+                                <label for="active" string="Active member" class="me-2"/>
+                                <field name="active" widget="boolean_toggle"/>
+                            </div>
+                            <field name="x_is_church_member" invisible="1"/>
+                        </div>
+                    </div>
+                    <group>
+                        <group string="Personal data">
+                            <field name="x_birthdate"/>
+                            <field name="x_age"/>
+                            <field name="x_gender"/>
+                            <field name="x_marital_status"/>
+                            <field name="x_education_level"/>
+                            <field name="x_occupational_status"/>
+                            <field name="x_current_occupation"/>
+                        </group>
+                        <group string="Contact &amp; address">
+                            <field name="phone" widget="phone"/>
+                            <field name="mobile" widget="phone"/>
+                            <field name="email" widget="email"/>
+                            <field name="x_sector"/>
+                            <label for="street" string="Address"/>
+                            <div class="o_address_format">
+                                <field name="street" placeholder="Street..." class="o_address_street"/>
+                                <field name="street2" placeholder="Street 2..." class="o_address_street"/>
+                                <field name="city" placeholder="City" class="o_address_city"/>
+                                <field name="state_id" class="o_address_state" placeholder="State/province" options="{'no_open': True, 'no_quick_create': True}" context="{'country_id': country_id, 'zip': zip}"/>
+                                <field name="zip" placeholder="ZIP" class="o_address_zip"/>
+                                <field name="country_id" placeholder="Country" class="o_address_country" options="{'no_open': True, 'no_create': True}"/>
+                            </div>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Church" name="church_info">
+                            <group>
+                                <group>
+                                    <field name="x_baptized"/>
+                                    <field name="x_baptism_date" invisible="not x_baptized"/>
+                                    <field name="x_church_entry_date"/>
+                                </group>
+                                <group>
+                                    <field name="x_ministry_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                                    <field name="x_role_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                                    <field name="x_interested_ministry_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                                    <field name="x_invited_by_id"/>
+                                    <field name="x_discipler_id"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Family members" name="family_info">
+                            <field name="x_family_relation_ids">
+                                <list editable="bottom">
+                                    <field name="relation_type"/>
+                                    <field name="is_member"/>
+                                    <field name="related_partner_id" invisible="not is_member" required="is_member" options="{'no_create': True}"/>
+                                    <field name="non_member_name" invisible="is_member" required="not is_member"/>
+                                    <field name="x_birthdate"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_church_members" model="ir.actions.act_window">
+        <field name="name">Members</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">list,form,kanban</field>
+        <field name="domain">[('x_is_church_member', '=', True)]</field>
+        <field name="context">{'default_x_is_church_member': True}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create the first church member
+            </p>
+        </field>
+    </record>
+
+    <!-- Action forced to use our views -->
+    <record id="action_church_members_list_view" model="ir.actions.act_window.view">
+        <field name="sequence" eval="1"/>
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="view_partner_church_list"/>
+        <field name="act_window_id" ref="cdb_management.action_church_members"/>
+    </record>
+
+    <record id="action_church_members_form_view" model="ir.actions.act_window.view">
+        <field name="sequence" eval="2"/>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_partner_church_form"/>
+        <field name="act_window_id" ref="cdb_management.action_church_members"/>
+    </record>
+</odoo>

@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Attendance Type Views -->
+    <record id="view_church_attendance_type_list" model="ir.ui.view">
+        <field name="name">church.attendance.type.list</field>
+        <field name="model">church.attendance.type</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name" string="Nombre"/>
+                <field name="code"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_church_attendance_type" model="ir.actions.act_window">
+        <field name="name">Attendance session types</field>
+        <field name="res_model">church.attendance.type</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first attendance session type
+            </p>
+        </field>
+    </record>
+
+    <!-- Attendance Views -->
+    <record id="view_church_attendance_list" model="ir.ui.view">
+        <field name="name">church.attendance.list</field>
+        <field name="model">church.attendance</field>
+        <field name="arch" type="xml">
+            <list string="Attendance sessions" limit="300">
+                <field name="name"/>
+                <field name="date"/>
+                <field name="attendance_type_id"/>
+                <field name="responsible_id"/>
+                <field name="total_attendance" string="Attendance"/>
+                <field name="state" widget="badge" decoration-info="state == 'pendiente'" decoration-success="state == 'cerrado'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_church_attendance_form" model="ir.ui.view">
+        <field name="name">church.attendance.form</field>
+        <field name="model">church.attendance</field>
+        <field name="arch" type="xml">
+            <form string="Attendance session">
+                <header>
+                    <button name="action_open" string="Open session" type="object" invisible="state != 'pendiente'" class="oe_highlight"/>
+                    <button name="action_close" string="Close session" type="object" invisible="state != 'abierto'" class="oe_highlight"/>
+                    <button name="action_draft" string="Return to draft" type="object" invisible="state != 'abierto'"/>
+                    <button name="action_refresh_members" string="Sync members" type="object" invisible="state == 'cerrado'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="pendiente,abierto,cerrado"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+
+                    <!-- Quorum Banner -->
+                    <div class="alert alert-success text-center mb-3" role="alert" invisible="not x_requires_quorum or not x_has_quorum">
+                        <strong>Quorum reached!</strong> There is enough attendance to start the meeting.
+                    </div>
+                    <div class="alert alert-warning text-center mb-3" role="alert" invisible="not x_requires_quorum or x_has_quorum">
+                        <strong>No quorum:</strong> Need at least <field name="x_quorum_needed"/> attendees (minimum) to start.
+                    </div>
+                    
+                    <!-- Indicators Table / Cards -->
+                    <div class="o_group mb-3">
+                        <div class="row text-center mb-3">
+                            <div class="col-3">
+                                <div class="card p-3 shadow-sm border-info" style="border-left: 5px solid #17a2b8;">
+                                    <div class="text-muted small uppercase">Total members</div>
+                                    <div class="h3 font-weight-bold"><field name="total_members" readonly="1"/></div>
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <div class="card p-3 shadow-sm border-success" style="border-left: 5px solid #28a745;">
+                                    <div class="text-muted small uppercase">Attendance</div>
+                                    <div class="h3 font-weight-bold text-success"><field name="total_attendance" readonly="1"/></div>
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <div class="card p-3 shadow-sm border-danger" style="border-left: 5px solid #dc3545;">
+                                    <div class="text-muted small uppercase">Absence</div>
+                                    <div class="h3 font-weight-bold text-danger"><field name="total_absence" readonly="1"/></div>
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <div class="card p-3 shadow-sm border-warning" style="border-left: 5px solid #ffc107;">
+                                    <div class="text-muted small uppercase">Excuses</div>
+                                    <div class="h3 font-weight-bold text-warning"><field name="total_excuse" readonly="1"/></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <group>
+                        <group>
+                            <field name="attendance_type_id" options="{'no_create': True}" readonly="state == 'cerrado'"/>
+                            <field name="date" readonly="state == 'cerrado'"/>
+                            <field name="x_requires_quorum" widget="boolean_toggle" readonly="state == 'cerrado'"/>
+                        </group>
+                        <group>
+                            <field name="responsible_id" options="{'no_create': True}" readonly="state == 'cerrado'"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Member attendance" name="attendance_lines">
+                            <field name="line_ids" readonly="state == 'cerrado'">
+                                <list editable="bottom" create="0" delete="0" limit="300">
+                                    <field name="partner_id" readonly="1"/>
+                                    <field name="status" widget="selection"/>
+                                    <field name="excuse_reason" invisible="status != 'excusa'" required="status == 'excusa'"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_church_attendance" model="ir.actions.act_window">
+        <field name="name">Attendance sessions</field>
+        <field name="res_model">church.attendance</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new attendance session
+            </p>
+        </field>
+    </record>
+</odoo>

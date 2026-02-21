@@ -1,0 +1,195 @@
+/* CDB Management Custom Styling */
+
+/* Force sentence case on list headers */
+.o_list_renderer thead th {
+    text-transform: none !important;
+}
+
+/* Full screen dashboard (Sheetless) */
+.o_dashboard_form .o_form_renderer {
+    padding: 0 !important;
+}
+
+.o_cdb_dashboard_container {
+    padding: 24px !important;
+    background-color: #f8f9fa !important;
+    min-height: 100vh;
+    width: 100% !important;
+}
+
+/* Ensure the cards row looks good in full width */
+.o_cdb_dashboard_container .row {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+
+/* Custom Aesthetic Tabs */
+.o_cdb_dashboard_container .o_notebook_headers {
+    display: none !important; /* Hide standard Odoo tabs */
+}
+
+.o_cdb_custom_tabs {
+    display: flex !important;
+    gap: 40px !important; /* Significantly increased gap for more separation */
+    margin-bottom: 40px !important;
+    padding: 8px !important;
+    background: transparent !important;
+    width: fit-content !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.o_cdb_tab_btn {
+    padding: 12px 28px !important;
+    border-radius: 50px !important; /* Pill shape */
+    font-size: 1.15rem !important;
+    font-weight: 700 !important;
+    color: #475569 !important;
+    cursor: pointer !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    border: 1px solid #e2e8f0 !important;
+    background: #ffffff !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02) !important;
+}
+
+.o_cdb_tab_btn:hover {
+    color: #1e293b !important;
+    background: #f8fafc !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05) !important;
+}
+
+.o_cdb_tab_btn.active {
+    background: #3b82f6 !important; /* Active background */
+    color: #ffffff !important; /* White text for active */
+    border-color: #3b82f6 !important;
+    box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3) !important;
+}
+
+/* Center the custom tabs */
+.o_cdb_custom_tabs {
+    margin-left: auto !important;
+    margin-right: auto !important;
+    display: flex !important;
+    justify-content: center !important;
+}
+
+/* Improve Card Distribution */
+.o_cdb_dashboard_container .o_kanban_renderer {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+    gap: 30px !important;
+    padding: 20px !important;
+}
+
+/* Hide breadcrumb for dashboard to avoid duplication */
+.o_dashboard_form .o_control_panel .breadcrumb {
+    display: none !important;
+}
+
+.o_dashboard_form .o_control_panel_main {
+    justify-content: flex-end !important; /* Move settings/refresh to right */
+}
+
+/* Notebook styling in dashboard */
+.o_cdb_dashboard_container .o_notebook {
+    background-color: transparent !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+}
+
+.o_cdb_dashboard_container .o_kanban_record_title, 
+.o_cdb_dashboard_container .o_kanban_record strong {
+    font-size: 1.4rem !important;
+}
+
+/* Premium Birthday Cards */
+.o_cdb_dashboard_container .o_kanban_renderer {
+    background-color: transparent !important;
+    padding: 10px !important;
+}
+
+/* Style the Odoo record container to match user's inspector changes */
+.o_cdb_dashboard_container .o_kanban_record:not(.o_kanban_ghost) {
+    background: #ffffff !important;
+    border: none !important;
+    border-radius: 12px !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05) !important;
+    padding: 0 !important; /* Let the inner card handle padding */
+    margin-bottom: 24px !important;
+    min-width: 450px !important;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+}
+
+.o_cdb_birthday_card {
+    background: #ffffff !important;
+    border: none !important;
+    border-radius: 12px !important;
+    padding: 24px !important;
+    cursor: pointer !important;
+    border-left: 8px solid #70a1ff !important;
+    position: relative !important;
+    overflow: hidden !important;
+    width: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
+.o_cdb_dashboard_container .o_kanban_record:not(.o_kanban_ghost):hover {
+    transform: translateY(-8px) scale(1.02) !important;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1) !important;
+}
+
+.o_cdb_card_avatar img {
+    width: 140px !important;
+    border-radius: 50% !important;
+    object-fit: cover !important;
+    border: 4px solid white !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1) !important;
+}
+
+.o_cdb_card_name {
+    font-size: 1.3rem !important; /* Even larger for the larger avatar */
+    font-weight: 800 !important;
+    color: #2f3542 !important;
+    margin-bottom: 8px !important;
+    line-height: 1.1 !important;
+}
+
+.o_cdb_card_date {
+    font-size: 1rem !important;
+    color: #57606f !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
+.o_cdb_card_date i {
+    color: #ff4757 !important; /* Celebratory red/pink for the icon */
+    font-size: 1rem !important;
+}
+
+/* KPI Font Sizes */
+.o_cdb_dashboard_container .text-muted.small {
+    font-size: 1.1rem !important;
+    font-weight: 600 !important;
+    color: #495057 !important;
+}
+
+.o_cdb_dashboard_container .h3 {
+    font-size: 3.5rem !important;
+    line-height: 1.2 !important;
+}
+
+.o_cdb_dashboard_container .card {
+    min-height: 140px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+}
+
+/* Ensure secondary labels also follow sentence case if they were uppercase */
+.o_list_renderer thead th span {
+    text-transform: none !important;
+}

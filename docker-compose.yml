@@ -1,0 +1,33 @@
+services:
+  db:
+    image: postgres:17
+    environment:
+      - POSTGRES_PASSWORD=odoo
+      - POSTGRES_USER=odoo
+      - POSTGRES_DB=postgres
+    ports:
+      - "5419:5432"
+    restart: always
+    volumes:
+      - ./postgresql:/var/lib/postgresql/data
+
+  odoo19:
+    image: odoo:19.0
+    platform: linux/amd64
+    depends_on:
+      - db
+    ports:
+      - "8025:8069"
+      - "8026:8072"
+    tty: true
+    command: /usr/bin/odoo --db_user=odoo --db_host=db --db_password=odoo -d cdb -u cdb_management -d cdb -u cdb_management
+    environment:
+      - HOST=db
+      - USER=odoo
+      - PASSWORD=odoo
+    user: root
+    volumes:
+      - ./custom-addons:/mnt/custom-addons
+      - ./etc:/etc/odoo
+      - ./entrypoint.sh:/entrypoint.sh
+    restart: always

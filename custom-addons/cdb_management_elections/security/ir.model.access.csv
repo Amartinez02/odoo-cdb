@@ -1,0 +1,9 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_cdb_election_viewer,cdb.election.viewer,model_cdb_election,group_cdb_elections_viewer,1,0,0,0
+access_cdb_election_manager,cdb.election.manager,model_cdb_election,group_cdb_elections_manager,1,1,1,1
+access_cdb_election_position_viewer,cdb.election.position.viewer,model_cdb_election_position,group_cdb_elections_viewer,1,0,0,0
+access_cdb_election_position_manager,cdb.election.position.manager,model_cdb_election_position,group_cdb_elections_manager,1,1,1,1
+access_cdb_election_candidate_viewer,cdb.election.candidate.viewer,model_cdb_election_candidate,group_cdb_elections_viewer,1,0,0,0
+access_cdb_election_candidate_manager,cdb.election.candidate.manager,model_cdb_election_candidate,group_cdb_elections_manager,1,1,1,1
+access_cdb_election_vote_log_viewer,cdb.election.vote.log.viewer,model_cdb_election_vote_log,group_cdb_elections_viewer,1,0,0,0
+access_cdb_election_vote_log_manager,cdb.election.vote.log.manager,model_cdb_election_vote_log,group_cdb_elections_manager,1,1,1,1

@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_church_dashboard_form" model="ir.ui.view">
+        <field name="name">church.dashboard.form</field>
+        <field name="model">church.dashboard</field>
+        <field name="arch" type="xml">
+            <form create="0" edit="0" delete="0" class="o_dashboard_form">
+                <div class="o_cdb_dashboard_container">
+                    <div class="row text-center mb-4">
+                        <div class="col-6 col-lg-3">
+                            <div class="card p-3 shadow-sm mb-3" style="border-left: 5px solid #17a2b8;">
+                                <div class="text-muted small uppercase mb-1">Total members</div>
+                                <div class="h3 font-weight-bold text-info mb-0">
+                                    <field name="member_count" readonly="1"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-lg-3">
+                            <div class="card p-3 shadow-sm mb-3" style="border-left: 5px solid #28a745;">
+                                <div class="text-muted small uppercase mb-1">Avg Presencial</div>
+                                <div class="h3 font-weight-bold text-success mb-0">
+                                    <field name="avg_presencial" readonly="1" widget="integer"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-lg-3">
+                            <div class="card p-3 shadow-sm mb-3" style="border-left: 5px solid #ffbc00;">
+                                <div class="text-muted small uppercase mb-1">Avg Online</div>
+                                <div class="h3 font-weight-bold text-warning mb-0">
+                                    <field name="avg_online" readonly="1" widget="integer"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-lg-3">
+                            <div class="card p-3 shadow-sm mb-3" style="border-left: 5px solid #6c757d;">
+                                <div class="text-muted small uppercase mb-1">Total Average</div>
+                                <div class="h3 font-weight-bold text-secondary mb-0">
+                                    <field name="avg_attendance" readonly="1" widget="integer"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <field name="active_tab" invisible="1"/>
+                    <div class="row">
+                        <div class="col-lg-9">
+                            <div class="o_cdb_custom_tabs">
+                        <!-- Hoy -->
+                        <button type="object" name="action_set_tab" string="Hoy" 
+                                context="{'tab': 'today'}"
+                                class="o_cdb_tab_btn active"
+                                invisible="active_tab != 'today'"/>
+                        <button type="object" name="action_set_tab" string="Hoy" 
+                                context="{'tab': 'today'}"
+                                class="o_cdb_tab_btn"
+                                invisible="active_tab == 'today'"/>
+
+                        <!-- Esta semana -->
+                        <button type="object" name="action_set_tab" string="Esta semana" 
+                                context="{'tab': 'week'}"
+                                class="o_cdb_tab_btn active"
+                                invisible="active_tab != 'week'"/>
+                        <button type="object" name="action_set_tab" string="Esta semana" 
+                                context="{'tab': 'week'}"
+                                class="o_cdb_tab_btn"
+                                invisible="active_tab == 'week'"/>
+
+                        <!-- Próxima semana -->
+                        <button type="object" name="action_set_tab" string="Próxima semana" 
+                                context="{'tab': 'next_week'}"
+                                class="o_cdb_tab_btn active"
+                                invisible="active_tab != 'next_week'"/>
+                        <button type="object" name="action_set_tab" string="Próxima semana" 
+                                context="{'tab': 'next_week'}"
+                                class="o_cdb_tab_btn"
+                                invisible="active_tab == 'next_week'"/>
+
+                        <!-- Este mes -->
+                        <button type="object" name="action_set_tab" string="Este mes" 
+                                context="{'tab': 'month'}"
+                                class="o_cdb_tab_btn active"
+                                invisible="active_tab != 'month'"/>
+                        <button type="object" name="action_set_tab" string="Este mes" 
+                                context="{'tab': 'month'}"
+                                class="o_cdb_tab_btn"
+                                invisible="active_tab == 'month'"/>
+
+                        <!-- Este año -->
+                        <button type="object" name="action_set_tab" string="Este año" 
+                                context="{'tab': 'year'}"
+                                class="o_cdb_tab_btn active"
+                                invisible="active_tab != 'year'"/>
+                        <button type="object" name="action_set_tab" string="Este año" 
+                                context="{'tab': 'year'}"
+                                class="o_cdb_tab_btn"
+                                invisible="active_tab == 'year'"/>
+                    </div>
+
+                    <notebook class="mt-4 o_cdb_sheetless_notebook">
+                        <page string="Today's birthdays" name="today" invisible="active_tab != 'today'">
+                            <field name="birthday_today_ids" mode="kanban" readonly="1">
+                                <kanban create="0" delete="0" action="open_member" type="object" class="o_cdb_kanban_full">
+                                    <templates>
+                                        <t t-name="card">
+                                            <div class="o_cdb_birthday_card d-flex align-items-center">
+                                                <div class="o_cdb_card_avatar">
+                                                    <field name="image_128" widget="image" options="{'preview_image': 'image_128'}"/>
+                                                </div>
+                                                <div class="o_cdb_card_info ms-3">
+                                                    <div class="o_cdb_card_name"><field name="name"/></div>
+                                                    <div class="o_cdb_card_date"><i class="fa fa-birthday-cake me-1"/> <field name="x_birthdate"/></div>
+                                                </div>
+                                            </div>
+                                        </t>
+                                    </templates>
+                                </kanban>
+                            </field>
+                        </page>
+                        <page string="Birthdays this week" name="this_week" invisible="active_tab != 'week'">
+                            <field name="birthday_week_ids" mode="kanban" readonly="1">
+                                <kanban create="0" delete="0" action="open_member" type="object" class="o_cdb_kanban_full">
+                                    <templates>
+                                        <t t-name="card">
+                                            <div class="o_cdb_birthday_card d-flex align-items-center">
+                                                <div class="o_cdb_card_avatar">
+                                                    <field name="image_128" widget="image" options="{'preview_image': 'image_128'}"/>
+                                                </div>
+                                                <div class="o_cdb_card_info ms-3">
+                                                    <div class="o_cdb_card_name"><field name="name"/></div>
+                                                    <div class="o_cdb_card_date"><i class="fa fa-birthday-cake me-1"/> <field name="x_birthdate"/></div>
+                                                </div>
+                                            </div>
+                                        </t>
+                                    </templates>
+                                </kanban>
+                            </field>
+                        </page>
+                        <page string="Next week" name="next_week" invisible="active_tab != 'next_week'">
+                            <field name="birthday_next_week_ids" mode="kanban" readonly="1">
+                                <kanban create="0" delete="0" action="open_member" type="object" class="o_cdb_kanban_full">
+                                    <templates>
+                                        <t t-name="card">
+                                            <div class="o_cdb_birthday_card d-flex align-items-center">
+                                                <div class="o_cdb_card_avatar">
+                                                    <field name="image_128" widget="image" options="{'preview_image': 'image_128'}"/>
+                                                </div>
+                                                <div class="o_cdb_card_info ms-3">
+                                                    <div class="o_cdb_card_name"><field name="name"/></div>
+                                                    <div class="o_cdb_card_date"><i class="fa fa-birthday-cake me-1"/> <field name="x_birthdate"/></div>
+                                                </div>
+                                            </div>
+                                        </t>
+                                    </templates>
+                                </kanban>
+                            </field>
+                        </page>
+                        <page string="Current month" name="this_month" invisible="active_tab != 'month'">
+                            <field name="birthday_month_ids" mode="kanban" readonly="1">
+                                <kanban create="0" delete="0" action="open_member" type="object" class="o_cdb_kanban_full">
+                                    <templates>
+                                        <t t-name="card">
+                                            <div class="o_cdb_birthday_card d-flex align-items-center">
+                                                <div class="o_cdb_card_avatar">
+                                                    <field name="image_128" widget="image" options="{'preview_image': 'image_128'}"/>
+                                                </div>
+                                                <div class="o_cdb_card_info ms-3">
+                                                    <div class="o_cdb_card_name"><field name="name"/></div>
+                                                    <div class="o_cdb_card_date"><i class="fa fa-birthday-cake me-1"/> <field name="x_birthdate"/></div>
+                                                </div>
+                                            </div>
+                                        </t>
+                                    </templates>
+                                </kanban>
+                            </field>
+                        </page>
+                        <page string="This year" name="this_year" invisible="active_tab != 'year'">
+                            <field name="birthday_year_ids" mode="kanban" readonly="1">
+                                <kanban create="0" delete="0" action="open_member" type="object" class="o_cdb_kanban_full">
+                                    <templates>
+                                        <t t-name="card">
+                                            <div class="o_cdb_birthday_card d-flex align-items-center">
+                                                <div class="o_cdb_card_avatar">
+                                                    <field name="image_128" widget="image" options="{'preview_image': 'image_128'}"/>
+                                                </div>
+                                                <div class="o_cdb_card_info ms-3">
+                                                    <div class="o_cdb_card_name"><field name="name"/></div>
+                                                    <div class="o_cdb_card_date"><i class="fa fa-birthday-cake me-1"/> <field name="x_birthdate"/></div>
+                                                </div>
+                                            </div>
+                                        </t>
+                                    </templates>
+                                </kanban>
+                            </field>
+                        </page>
+                    </notebook>
+                        </div>
+                        <div class="col-lg-3">
+                            <h3 class="mb-4 text-center mt-2" style="font-weight: 700; color: #475569;">Actividades del Año</h3>
+                            <field name="yearly_activity_ids" mode="kanban" readonly="1">
+                                <kanban create="0" delete="0" class="o_cdb_kanban_full">
+                                    <templates>
+                                        <t t-name="card">
+                                            <div class="card shadow-sm mb-3 w-100" style="border-left: 5px solid #e1b12c; border-radius: 8px;">
+                                                <div class="card-body p-3">
+                                                    <h5 class="card-title font-weight-bold text-dark mb-1"><field name="name"/></h5>
+                                                    <p class="card-text text-muted mb-2"><i class="fa fa-calendar me-2"></i><field name="date"/></p>
+                                                    <small class="text-secondary"><i class="fa fa-user me-2"></i><field name="responsible_id"/></small>
+                                                </div>
+                                            </div>
+                                        </t>
+                                    </templates>
+                                </kanban>
+                            </field>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_church_dashboard" model="ir.actions.server">
+        <field name="name">CDB Dashboard</field>
+        <field name="model_id" ref="model_church_dashboard"/>
+        <field name="state">code</field>
+        <field name="code">
+            action = model.action_open_dashboard()
+        </field>
+    </record>
+
+    <menuitem id="menu_church_dashboard"
+              name="Dashboard"
+              parent="menu_church_root"
+              action="action_church_dashboard"
+              sequence="5"/>
+</odoo>
