@@ -1,30 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Top-level Menu -->
-    <menuitem id="menu_church_root"
-              name="ACYM CDB"
-              web_icon="cdb_management,static/description/icon.png"
-              sequence="10"/>
-
-    <!-- Main Menus -->
-    <menuitem id="menu_church_members_main"
-              name="Members"
-              parent="menu_church_root"
-              sequence="10"/>
-
-    <menuitem id="menu_church_attendance_main"
-              name="Attendance"
-              parent="menu_church_root"
-              sequence="20"/>
-
-    <menuitem id="menu_church_config"
-              name="Configuration"
-              parent="menu_church_root"
-              sequence="100"
-              groups="group_church_manager"/>
-
-
-    <!-- Submenus -->
+    <!-- Submenus referencing actions -->
     <menuitem id="menu_church_members"
               name="Members list"
               parent="menu_church_members_main"
