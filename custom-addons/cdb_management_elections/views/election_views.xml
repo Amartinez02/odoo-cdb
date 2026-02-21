@@ -134,8 +134,7 @@
                                            decoration-bf="1"
                                            readonly="election_state != 'draft'"/>
                                     <field name="votes"
-                                           decoration-bf="1"
-                                           readonly="1"/>
+                                           decoration-bf="1"/>
                                     <field name="percentage"
                                            widget="progressbar"/>
                                     <field name="winner_rank"
