@@ -140,10 +140,7 @@ class ChurchAttendance(models.Model):
                 new_lines_commands.append((2, line.id))
             
             if new_lines_commands:
-                if isinstance(record.id, models.NewId):
-                    record.line_ids = new_lines_commands
-                else:
-                    record.write({'line_ids': new_lines_commands})
+                record.update({'line_ids': new_lines_commands})
 
     def _load_members(self):
         self._sync_attendance_lines()
