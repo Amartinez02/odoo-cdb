@@ -16,6 +16,17 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: cdb_management
+#: model_terms:ir.ui.view,arch_db:cdb_management.view_partner_church_form
+#: model_terms:ir.ui.view,arch_db:cdb_management.view_partner_church_list
+msgid "Applies for assembly"
+msgstr "Aplica para asamblea"
+
+#. module: cdb_management
+#: model:ir.model.fields.selection,name:cdb_management.selection__church_attendance__criteria__assembly
+msgid "Assembly members"
+msgstr "Miembros de asamblea"
+
+#. module: cdb_management
 #: model_terms:ir.ui.view,arch_db:cdb_management.view_church_attendance_form
 msgid "<strong>No quorum:</strong> Need at least"
 msgstr "<strong>Sin quórum:</strong> Se requiere al menos"

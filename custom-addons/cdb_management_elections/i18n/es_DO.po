@@ -16,6 +16,11 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: cdb_management_elections
+#: model:ir.model.fields,field_description:cdb_management_elections.field_cdb_election_candidate__sequence
+msgid "Sequence"
+msgstr "Orden"
+
+#. module: cdb_management_elections
 #: model:res.groups,comment:cdb_management_elections.group_cdb_elections_manager
 msgid ""
 "\n"
