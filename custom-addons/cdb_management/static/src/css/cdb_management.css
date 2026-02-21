@@ -17,6 +17,11 @@
     width: 100% !important;
 }
 
+/* Hide overflow on the dashboard specifically */
+.o_dashboard_form .o_content {
+    overflow: hidden !important;
+}
+
 /* Ensure the cards row looks good in full width */
 .o_cdb_dashboard_container .row {
     margin-left: 0 !important;
@@ -119,7 +124,7 @@
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05) !important;
     padding: 0 !important; /* Let the inner card handle padding */
     margin-bottom: 24px !important;
-    min-width: 450px !important;
+    min-width: 300px !important;
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
 }
 
@@ -127,7 +132,7 @@
     background: #ffffff !important;
     border: none !important;
     border-radius: 12px !important;
-    padding: 24px !important;
+    padding: 16px !important;
     cursor: pointer !important;
     border-left: 8px solid #70a1ff !important;
     position: relative !important;
@@ -143,7 +148,7 @@
 }
 
 .o_cdb_card_avatar img {
-    width: 140px !important;
+    width: 80px !important;
     border-radius: 50% !important;
     object-fit: cover !important;
     border: 4px solid white !important;
@@ -151,7 +156,7 @@
 }
 
 .o_cdb_card_name {
-    font-size: 1.3rem !important; /* Even larger for the larger avatar */
+    font-size: 1.1rem !important; /* Reduced for smaller cards */
     font-weight: 800 !important;
     color: #2f3542 !important;
     margin-bottom: 8px !important;
@@ -193,3 +198,93 @@
 .o_list_renderer thead th span {
     text-transform: none !important;
 }
+
+/* Non-clickable Kanban records for activities */
+.o_cdb_dashboard_container .o_cdb_no_click .o_kanban_record:not(.o_kanban_ghost) {
+    pointer-events: none !important;
+    cursor: default !important;
+    transform: none !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05) !important;
+    margin-bottom: 12px !important;
+}
+
+.o_cdb_dashboard_container .o_cdb_no_click .o_kanban_record:not(.o_kanban_ghost):hover {
+    transform: none !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Remove annoying empty placeholder lines in list views */
+.o_list_table tbody tr:not(.o_data_row):not(.d-print-none):not(.o_list_row_add):not(.o_field_x2many_list_row_add) {
+    display: none !important;
+}
+
+/* Optional: Make list headers cleaner and more premium */
+.o_list_table thead th {
+    background-color: #f1f5f9 !important;
+    border-bottom: 2px solid #e2e8f0 !important;
+    color: #475569 !important;
+    font-weight: 700 !important;
+}
+
+.o_list_table {
+    border: none !important;
+}
+
+
+.o_list_table .o_data_row td {
+    border-bottom: 1px solid #f1f5f9 !important;
+}
+
+/* Premium Error Modal Styling */
+.modal-content.o_error_dialog {
+    border: none !important;
+    border-radius: 20px !important;
+    overflow: hidden !important;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+}
+
+.o_error_dialog .modal-header {
+    background: linear-gradient(135deg, #ff4757, #ff6b81) !important;
+    color: white !important;
+    border-bottom: none !important;
+    padding: 20px 24px !important;
+}
+
+.o_error_dialog .modal-title {
+    font-weight: 800 !important;
+    font-size: 1.4rem !important;
+    letter-spacing: -0.02em !important;
+}
+
+.o_error_dialog .btn-close {
+    filter: brightness(0) invert(1) !important;
+}
+
+.o_error_dialog .modal-body {
+    padding: 30px 24px !important;
+    color: #1e293b !important;
+    font-size: 1.1rem !important;
+    line-height: 1.6 !important;
+}
+
+.o_error_dialog .modal-footer {
+    border-top: 1px solid #f1f5f9 !important;
+    padding: 16px 24px !important;
+    background-color: #f8fafc !important;
+}
+
+.o_error_dialog .modal-footer .btn-primary {
+    background: #ff4757 !important;
+    border: none !important;
+    border-radius: 12px !important;
+    padding: 10px 24px !important;
+    font-weight: 700 !important;
+    transition: all 0.2s !important;
+}
+
+.o_error_dialog .modal-footer .btn-primary:hover {
+    background: #ff6b81 !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 12px rgba(255, 71, 87, 0.3) !important;
+}
+

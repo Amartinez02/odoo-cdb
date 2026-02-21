@@ -100,20 +100,21 @@
                     <group>
                         <group>
                             <field name="attendance_type_id" options="{'no_create': True}" readonly="state == 'cerrado'"/>
-                            <field name="date" readonly="state == 'cerrado'"/>
+                            <field name="criteria" readonly="state == 'cerrado'"/>
                             <field name="x_requires_quorum" widget="boolean_toggle" readonly="state == 'cerrado'"/>
                         </group>
                         <group>
-                            <field name="responsible_id" options="{'no_create': True}" readonly="state == 'cerrado'"/>
+                            <field name="date" readonly="state == 'cerrado'"/>
+                            <field name="responsible_id" options="{'no_create': True}" domain="[('x_is_church_member', '=', True)]" readonly="state == 'cerrado'"/>
                         </group>
                     </group>
 
                     <notebook>
                         <page string="Member attendance" name="attendance_lines">
                             <field name="line_ids" readonly="state == 'cerrado'">
-                                <list editable="bottom" create="0" delete="0" limit="300">
-                                    <field name="partner_id" readonly="1"/>
-                                    <field name="status" widget="selection"/>
+                                <list editable="bottom" create="0" delete="0" limit="300" js_class="cdb_attendance_list">
+                                    <field name="partner_id" readonly="1" force_save="1"/>
+                                    <field name="status" widget="radio" options="{'horizontal': true}"/>
                                     <field name="excuse_reason" invisible="status != 'excusa'" required="status == 'excusa'"/>
                                 </list>
                             </field>

@@ -7,5 +7,5 @@ class ChurchActivity(models.Model):
 
     name = fields.Char(string='Activity Name', required=True)
     date = fields.Date(string='Date', required=True)
-    responsible_id = fields.Many2one('res.partner', string='Responsible', domain=[('x_is_church_member', '=', True)])
+    responsible = fields.Char(string='Responsible')
     active = fields.Boolean(default=True)

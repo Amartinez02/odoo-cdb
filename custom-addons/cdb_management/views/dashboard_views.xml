@@ -6,91 +6,115 @@
         <field name="arch" type="xml">
             <form create="0" edit="0" delete="0" class="o_dashboard_form">
                 <div class="o_cdb_dashboard_container">
-                    <div class="row text-center mb-4">
-                        <div class="col-6 col-lg-3">
-                            <div class="card p-3 shadow-sm mb-3" style="border-left: 5px solid #17a2b8;">
-                                <div class="text-muted small uppercase mb-1">Total members</div>
-                                <div class="h3 font-weight-bold text-info mb-0">
-                                    <field name="member_count" readonly="1"/>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-6 col-lg-3">
-                            <div class="card p-3 shadow-sm mb-3" style="border-left: 5px solid #28a745;">
-                                <div class="text-muted small uppercase mb-1">Avg Presencial</div>
-                                <div class="h3 font-weight-bold text-success mb-0">
-                                    <field name="avg_presencial" readonly="1" widget="integer"/>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-6 col-lg-3">
-                            <div class="card p-3 shadow-sm mb-3" style="border-left: 5px solid #ffbc00;">
-                                <div class="text-muted small uppercase mb-1">Avg Online</div>
-                                <div class="h3 font-weight-bold text-warning mb-0">
-                                    <field name="avg_online" readonly="1" widget="integer"/>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-6 col-lg-3">
-                            <div class="card p-3 shadow-sm mb-3" style="border-left: 5px solid #6c757d;">
-                                <div class="text-muted small uppercase mb-1">Total Average</div>
-                                <div class="h3 font-weight-bold text-secondary mb-0">
-                                    <field name="avg_attendance" readonly="1" widget="integer"/>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <field name="active_tab" invisible="1"/>
                     <div class="row">
                         <div class="col-lg-9">
+                            <!-- Section 1: Membership -->
+                            <h4 class="mb-3 text-muted" style="font-weight: 600;">Membership</h4>
+                            <div class="row text-center mb-4">
+                                <div class="col-12 col-lg-4">
+                                    <div class="card p-3 shadow-sm mb-3" style="border-left: 5px solid #17a2b8;">
+                                        <div class="text-muted small uppercase mb-1">Total members</div>
+                                        <div class="h3 font-weight-bold text-info mb-0">
+                                            <field name="member_count" readonly="1"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-lg-4">
+                                    <div class="card p-3 shadow-sm mb-3" style="border-left: 5px solid #007bff;">
+                                        <div class="text-muted small uppercase mb-1">Baptized members</div>
+                                        <div class="h3 font-weight-bold text-primary mb-0">
+                                            <field name="baptized_count" readonly="1"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-lg-4">
+                                    <div class="card p-3 shadow-sm mb-3" style="border-left: 5px solid #6c757d;">
+                                        <div class="text-muted small uppercase mb-1">Non-baptized members</div>
+                                        <div class="h3 font-weight-bold text-secondary mb-0">
+                                            <field name="non_baptized_count" readonly="1"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Section 2: Attendance Averages -->
+                            <h4 class="mb-3 text-muted mt-2" style="font-weight: 600;">Average Attendance</h4>
+                            <div class="row text-center mb-4">
+                                <div class="col-12 col-lg-4">
+                                    <div class="card p-3 shadow-sm mb-3" style="border-left: 5px solid #6c5ce7;">
+                                        <div class="text-muted small uppercase mb-1">Total Average</div>
+                                        <div class="h3 font-weight-bold mb-0" style="color: #6c5ce7;">
+                                            <field name="avg_attendance" readonly="1" widget="integer"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-lg-4">
+                                    <div class="card p-3 shadow-sm mb-3" style="border-left: 5px solid #28a745;">
+                                        <div class="text-muted small uppercase mb-1">Presencial Avg</div>
+                                        <div class="h3 font-weight-bold text-success mb-0">
+                                            <field name="avg_presencial" readonly="1" widget="integer"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-lg-4">
+                                    <div class="card p-3 shadow-sm mb-3" style="border-left: 5px solid #ffbc00;">
+                                        <div class="text-muted small uppercase mb-1">Online Avg</div>
+                                        <div class="h3 font-weight-bold text-warning mb-0">
+                                            <field name="avg_online" readonly="1" widget="integer"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                    <field name="active_tab" invisible="1"/>
+
                             <div class="o_cdb_custom_tabs">
                         <!-- Hoy -->
-                        <button type="object" name="action_set_tab" string="Hoy" 
+                        <button type="object" name="action_set_tab" string="Today" 
                                 context="{'tab': 'today'}"
                                 class="o_cdb_tab_btn active"
                                 invisible="active_tab != 'today'"/>
-                        <button type="object" name="action_set_tab" string="Hoy" 
+                        <button type="object" name="action_set_tab" string="Today" 
                                 context="{'tab': 'today'}"
                                 class="o_cdb_tab_btn"
                                 invisible="active_tab == 'today'"/>
 
                         <!-- Esta semana -->
-                        <button type="object" name="action_set_tab" string="Esta semana" 
+                        <button type="object" name="action_set_tab" string="This week" 
                                 context="{'tab': 'week'}"
                                 class="o_cdb_tab_btn active"
                                 invisible="active_tab != 'week'"/>
-                        <button type="object" name="action_set_tab" string="Esta semana" 
+                        <button type="object" name="action_set_tab" string="This week" 
                                 context="{'tab': 'week'}"
                                 class="o_cdb_tab_btn"
                                 invisible="active_tab == 'week'"/>
 
                         <!-- Próxima semana -->
-                        <button type="object" name="action_set_tab" string="Próxima semana" 
+                        <button type="object" name="action_set_tab" string="Next week" 
                                 context="{'tab': 'next_week'}"
                                 class="o_cdb_tab_btn active"
                                 invisible="active_tab != 'next_week'"/>
-                        <button type="object" name="action_set_tab" string="Próxima semana" 
+                        <button type="object" name="action_set_tab" string="Next week" 
                                 context="{'tab': 'next_week'}"
                                 class="o_cdb_tab_btn"
                                 invisible="active_tab == 'next_week'"/>
 
                         <!-- Este mes -->
-                        <button type="object" name="action_set_tab" string="Este mes" 
+                        <button type="object" name="action_set_tab" string="This month" 
                                 context="{'tab': 'month'}"
                                 class="o_cdb_tab_btn active"
                                 invisible="active_tab != 'month'"/>
-                        <button type="object" name="action_set_tab" string="Este mes" 
+                        <button type="object" name="action_set_tab" string="This month" 
                                 context="{'tab': 'month'}"
                                 class="o_cdb_tab_btn"
                                 invisible="active_tab == 'month'"/>
 
                         <!-- Este año -->
-                        <button type="object" name="action_set_tab" string="Este año" 
+                        <button type="object" name="action_set_tab" string="This year" 
                                 context="{'tab': 'year'}"
                                 class="o_cdb_tab_btn active"
                                 invisible="active_tab != 'year'"/>
-                        <button type="object" name="action_set_tab" string="Este año" 
+                        <button type="object" name="action_set_tab" string="This year" 
                                 context="{'tab': 'year'}"
                                 class="o_cdb_tab_btn"
                                 invisible="active_tab == 'year'"/>
@@ -195,16 +219,16 @@
                     </notebook>
                         </div>
                         <div class="col-lg-3">
-                            <h3 class="mb-4 text-center mt-2" style="font-weight: 700; color: #475569;">Actividades del Año</h3>
+                            <h3 class="mb-4 text-center mt-2" style="font-weight: 700; color: #475569;">Yearly Activities</h3>
                             <field name="yearly_activity_ids" mode="kanban" readonly="1">
-                                <kanban create="0" delete="0" class="o_cdb_kanban_full">
+                                <kanban create="0" delete="0" class="o_cdb_kanban_full o_cdb_no_click">
                                     <templates>
                                         <t t-name="card">
-                                            <div class="card shadow-sm mb-3 w-100" style="border-left: 5px solid #e1b12c; border-radius: 8px;">
+                                            <div class="card shadow-sm mb-0 w-100" style="border-left: 5px solid #e1b12c; border-radius: 8px;">
                                                 <div class="card-body p-3">
                                                     <h5 class="card-title font-weight-bold text-dark mb-1"><field name="name"/></h5>
                                                     <p class="card-text text-muted mb-2"><i class="fa fa-calendar me-2"></i><field name="date"/></p>
-                                                    <small class="text-secondary"><i class="fa fa-user me-2"></i><field name="responsible_id"/></small>
+                                                    <small style="color: #000000;"><i class="fa fa-user me-2"></i><field name="responsible"/></small>
                                                 </div>
                                             </div>
                                         </t>

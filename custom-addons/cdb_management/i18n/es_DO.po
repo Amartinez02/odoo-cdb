@@ -992,3 +992,110 @@ msgstr "Miembros bautizados"
 #: model_terms:ir.ui.view,arch_db:cdb_management.view_church_dashboard_form
 msgid "Non-baptized members"
 msgstr "Miembros no bautizados"
+
+#. module: cdb_management
+#: model_terms:ir.ui.view,arch_db:cdb_management.view_church_dashboard_form
+msgid "Membership"
+msgstr "Membresía"
+
+#. module: cdb_management
+#: model_terms:ir.ui.view,arch_db:cdb_management.view_church_dashboard_form
+msgid "Average Attendance"
+msgstr "Promedios de Asistencia"
+
+#. module: cdb_management
+#: model_terms:ir.ui.view,arch_db:cdb_management.view_church_dashboard_form
+msgid "Presencial Avg"
+msgstr "Promedio Presencial"
+
+#. module: cdb_management
+#: model_terms:ir.ui.view,arch_db:cdb_management.view_church_dashboard_form
+msgid "Online Avg"
+msgstr "Promedio Virtual"
+
+#. module: cdb_management
+#: model_terms:ir.ui.view,arch_db:cdb_management.view_church_dashboard_form
+msgid "Total Average"
+msgstr "Promedio Total"
+
+#. module: cdb_management
+#: model_terms:ir.ui.view,arch_db:cdb_management.view_church_dashboard_form
+msgid "Today"
+msgstr "Hoy"
+
+#. module: cdb_management
+#: model_terms:ir.ui.view,arch_db:cdb_management.view_church_dashboard_form
+msgid "This week"
+msgstr "Esta semana"
+
+#. module: cdb_management
+#: model_terms:ir.ui.view,arch_db:cdb_management.view_church_dashboard_form
+msgid "Next week"
+msgstr "Próxima semana"
+
+#. module: cdb_management
+#: model_terms:ir.ui.view,arch_db:cdb_management.view_church_dashboard_form
+msgid "This month"
+msgstr "Este mes"
+
+#. module: cdb_management
+#: model_terms:ir.ui.view,arch_db:cdb_management.view_church_dashboard_form
+msgid "This year"
+msgstr "Este año"
+
+#. module: cdb_management
+#: model_terms:ir.ui.view,arch_db:cdb_management.view_church_dashboard_form
+msgid "Yearly Activities"
+msgstr "Actividades del Año"
+
+#. module: cdb_management
+#: model:ir.model.fields,field_description:cdb_management.field_church_attendance_report__presencial_count
+msgid "Presencial Attendance"
+msgstr "Asistencia Presencial"
+
+#. module: cdb_management
+#: model:ir.model.fields,field_description:cdb_management.field_church_attendance_report__online_count
+msgid "Online Attendance"
+msgstr "Asistencia Virtual"
+
+#. module: cdb_management
+#: model:ir.model.fields,field_description:cdb_management.field_church_attendance_report_new_line__visit_reason
+msgid "Visit Reason"
+msgstr "Motivo de visita"
+
+#. module: cdb_management
+#: model:ir.model,name:cdb_management.model_church_activity
+#: model:ir.ui.menu,name:cdb_management.menu_church_activity
+msgid "Church activity"
+msgstr "Actividad"
+
+#. module: cdb_management
+#: model_terms:ir.ui.view,arch_db:cdb_management.view_church_activity_form
+#: model_terms:ir.ui.view,arch_db:cdb_management.view_church_activity_list
+msgid "Activities"
+msgstr "Actividades"
+
+#. module: cdb_management
+#: model:ir.model.fields,field_description:cdb_management.field_church_attendance__criteria
+msgid "Criteria"
+msgstr "Criterio"
+
+#. module: cdb_management
+#: model:ir.model.fields.selection,name:cdb_management.selection__church_attendance__criteria__all
+msgid "All members"
+msgstr "Todos los miembros"
+
+#. module: cdb_management
+#: model:ir.model.fields.selection,name:cdb_management.selection__church_attendance__criteria__active
+msgid "Active members"
+msgstr "Miembros activos"
+
+#. module: cdb_management
+#: model:ir.model.fields.selection,name:cdb_management.selection__church_attendance__criteria__baptized
+msgid "Baptized members"
+msgstr "Miembros bautizados"
+
+#. module: cdb_management
+#: model:ir.model.fields.selection,name:cdb_management.selection__church_attendance__criteria__not_baptized
+msgid "Non-baptized members"
+msgstr "Miembros no bautizados"

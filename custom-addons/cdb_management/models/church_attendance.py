@@ -18,8 +18,13 @@ class ChurchAttendance(models.Model):
     name = fields.Char(string='Reference', compute='_compute_name', store=True)
     date = fields.Date(string='Date', default=fields.Date.context_today, required=True, tracking=True)
     attendance_type_id = fields.Many2one('church.attendance.type', string='Attendance type', required=True, tracking=True)
-    responsible_id = fields.Many2one('res.partner', string='Responsible', 
-                                    default=lambda self: self.env.user.partner_id, tracking=True)
+    criteria = fields.Selection([
+        ('all', 'All members'),
+        ('active', 'Active members'),
+        ('baptized', 'Baptized members'),
+        ('not_baptized', 'Non-baptized members')
+    ], string='Criteria', default='active', required=True, tracking=True)
+    responsible_id = fields.Many2one('res.partner', string='Responsible', tracking=True)
     
     state = fields.Selection([
         ('pendiente', 'Draft'),
@@ -71,24 +76,55 @@ class ChurchAttendance(models.Model):
         return records
 
     def _load_members(self):
-        self.ensure_one()
-        # Find all active church members
-        members = self.env['res.partner'].search([
-            ('x_is_church_member', '=', True),
-            ('active', '=', True)
-        ], order='name asc') # Name is "Apellido Nombre" or similar in Odoo by default, but we'll trust the search order
+        for record in self:
+            if record.state != 'pendiente':
+                continue
+
+            # Base domain: only church members
+            domain = [('x_is_church_member', '=', True)]
+            
+            # Apply criteria
+            if record.criteria == 'active':
+                domain.append(('active', '=', True))
+            elif record.criteria == 'baptized':
+                domain.extend([('active', '=', True), ('x_baptized', '=', True)])
+            elif record.criteria == 'not_baptized':
+                domain.extend([('active', '=', True), ('x_baptized', '=', False)])
+            # 'all' implies no additional active filtering or baptized filtering, just all church members
+            
+            # Find members
+            members = self.env['res.partner'].search(domain, order='name asc')
+            
+            # Prepare new lines
+            new_lines = [(5, 0, 0)] # Command 5 clears existing records
+            for member in members:
+                new_lines.append((0, 0, {
+                    'partner_id': member.id,
+                    'status': 'no',
+                }))
+            record.write({'line_ids': new_lines})
+
+    @api.onchange('criteria')
+    def _onchange_criteria(self):
+        # We can simulate the reloading in the UI by using `update` or directly changing line_ids
+        domain = [('x_is_church_member', '=', True)]
         
-        # Sort manually by name to be sure (Odoo name usually stores full name)
-        # If user wants specific "Apellido, Nombre" sorting, we might need to be careful
-        # Odoo partners are usually searched by name.
+        if self.criteria == 'active':
+            domain.append(('active', '=', True))
+        elif self.criteria == 'baptized':
+            domain.extend([('active', '=', True), ('x_baptized', '=', True)])
+        elif self.criteria == 'not_baptized':
+            domain.extend([('active', '=', True), ('x_baptized', '=', False)])
+            
+        members = self.env['res.partner'].search(domain, order='name asc')
         
-        lines = []
+        new_lines = [(5, 0, 0)]
         for member in members:
-            lines.append((0, 0, {
+            new_lines.append((0, 0, {
                 'partner_id': member.id,
-                'status': 'no', # Default to 'No' or keep empty? User said dropdown to place Si, No, Excusa.
+                'status': 'no',
             }))
-        self.write({'line_ids': lines})
+        self.line_ids = new_lines
 
     def action_open(self):
         self.write({'state': 'abierto'})

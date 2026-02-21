@@ -29,6 +29,7 @@ This module allows for the detailed management of church members, including:
     'assets': {
         'web.assets_backend': [
             'cdb_management/static/src/css/cdb_management.css',
+            'cdb_management/static/src/js/attendance_list_view.js',
         ],
     },
     'application': True,

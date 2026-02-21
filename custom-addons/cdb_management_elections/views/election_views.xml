@@ -86,16 +86,18 @@
                         </button>
                     </div>
                     <div class="oe_title">
+                        <label for="name" string="Election name"/>
                         <h1>
-                            <label for="name" string="Election name"/>
-                            <field name="name"
-                                   readonly="state != 'draft'" class="oe_inline"/>
+                            <field name="name" placeholder="e.g. Junta Directiva 2026"
+                                   readonly="state != 'draft'"/>
                         </h1>
                     </div>
                     <group>
                         <group>
-                            <field name="date_start"/>
-                            <field name="date_end"/>
+                            <field name="date_start" readonly="state != 'draft'"/>
+                        </group>
+                        <group>
+                            <field name="date_end" readonly="state != 'draft'"/>
                         </group>
                     </group>
 
