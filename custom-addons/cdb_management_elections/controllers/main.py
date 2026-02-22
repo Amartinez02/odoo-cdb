@@ -47,7 +47,7 @@ class CdbElectionController(http.Controller):
 
     @http.route(
         '/cdb/elections/<int:election_id>',
-        type='http', auth='public', website=True,
+        type='http', auth='public',
     )
     def election_live_board(self, election_id, **kwargs):
         election = request.env['cdb.election'].sudo().browse(election_id)
@@ -92,7 +92,7 @@ class CdbElectionController(http.Controller):
 
     @http.route(
         '/cdb/elections/<int:election_id>/results',
-        type='http', auth='public', website=True,
+        type='http', auth='public',
     )
     def election_results_page(self, election_id, **kwargs):
         election = request.env['cdb.election'].sudo().browse(election_id)
