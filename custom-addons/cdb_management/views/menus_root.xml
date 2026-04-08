@@ -3,7 +3,7 @@
     <!-- Top-level structural menus (Action-less parents) -->
     
     <menuitem id="menu_church_root"
-              name="ACYM CDB"
+              name="ACYMD"
               web_icon="cdb_management,static/description/icon.png"
               sequence="10"/>
 
