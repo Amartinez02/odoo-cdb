@@ -8,6 +8,7 @@
             <list>
                 <field name="name" string="Nombre"/>
                 <field name="code"/>
+                <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
                 <field name="active"/>
             </list>
         </field>
@@ -34,6 +35,7 @@
                 <field name="date"/>
                 <field name="attendance_type_id"/>
                 <field name="responsible_id"/>
+                <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
                 <field name="total_attendance" string="Attendance"/>
                 <field name="state" widget="badge" decoration-info="state == 'pendiente'" decoration-success="state == 'cerrado'"/>
             </list>
@@ -106,6 +108,7 @@
                         <group>
                             <field name="date" readonly="state == 'cerrado'"/>
                             <field name="responsible_id" options="{'no_create': True}" domain="[('x_is_church_member', '=', True)]" readonly="state == 'cerrado'"/>
+                            <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}" readonly="state == 'cerrado'"/>
                         </group>
                     </group>
 

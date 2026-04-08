@@ -19,6 +19,7 @@ This module extends Church Management (CDB) to provide:
     'data': [
         'security/security.xml',
         'security/ir.model.access.csv',
+        'security/multicompany_rules.xml',
 
         'views/election_views.xml',
         'views/election_menus.xml',

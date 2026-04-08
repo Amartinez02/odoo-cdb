@@ -8,6 +8,10 @@ class ChurchAttendanceType(models.Model):
     name = fields.Char(string='Name', required=True)
     code = fields.Char(string='Code', required=True, help="Example: ASSEMBLY")
     active = fields.Boolean(default=True)
+    company_id = fields.Many2one(
+        'res.company', string='Company',
+        default=lambda self: self.env.company, required=True,
+    )
 
 class ChurchAttendance(models.Model):
     _name = 'church.attendance'
@@ -34,6 +38,11 @@ class ChurchAttendance(models.Model):
     ], string='Status', default='pendiente', tracking=True)
 
     line_ids = fields.One2many('church.attendance.line', 'attendance_id', string='Attendance lines')
+
+    company_id = fields.Many2one(
+        'res.company', string='Company',
+        default=lambda self: self.env.company, required=True,
+    )
 
     # Indicators
     total_members = fields.Integer(string='Total members', compute='_compute_counts', store=True)
@@ -78,8 +87,13 @@ class ChurchAttendance(models.Model):
 
     def _get_member_domain(self):
         self.ensure_one()
-        # Base domain: only church members
-        domain = [('x_is_church_member', '=', True)]
+        # Base domain: only church members, filtered by company
+        domain = [
+            ('x_is_church_member', '=', True),
+            '|',
+            ('company_id', '=', False),
+            ('company_id', '=', self.company_id.id),
+        ]
         
         # Apply criteria
         if self.criteria == 'active':
@@ -179,3 +193,7 @@ class ChurchAttendanceLine(models.Model):
     ], string='Attendance', default='no')
     
     excuse_reason = fields.Text(string='Excuse reason')
+    company_id = fields.Many2one(
+        'res.company', string='Company',
+        related='attendance_id.company_id', store=True,
+    )

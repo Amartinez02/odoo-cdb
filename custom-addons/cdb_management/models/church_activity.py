@@ -9,3 +9,7 @@ class ChurchActivity(models.Model):
     date = fields.Date(string='Date', required=True)
     responsible = fields.Char(string='Responsible')
     active = fields.Boolean(default=True)
+    company_id = fields.Many2one(
+        'res.company', string='Company',
+        default=lambda self: self.env.company, required=True,
+    )

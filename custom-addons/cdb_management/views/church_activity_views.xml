@@ -8,6 +8,7 @@
                 <field name="date"/>
                 <field name="name"/>
                 <field name="responsible"/>
+                <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
             </list>
         </field>
     </record>
@@ -29,6 +30,7 @@
                         <group>
                             <field name="date"/>
                             <field name="responsible"/>
+                            <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
                         </group>
                     </group>
                 </sheet>

@@ -32,16 +32,30 @@ class ChurchDashboard(models.TransientModel):
     # Yearly Activities
     yearly_activity_ids = fields.Many2many('church.activity', string='Yearly Activities', compute='_compute_yearly_activities')
 
+    def _get_company_domain(self):
+        """Return a base domain fragment to filter by current company."""
+        return [
+            '|',
+            ('company_id', '=', False),
+            ('company_id', 'in', self.env.companies.ids),
+        ]
+
     def _compute_stats(self):
         Partner = self.env['res.partner']
         AttendanceReport = self.env['church.attendance.report']
         
-        member_count = Partner.search_count([('x_is_church_member', '=', True), ('active', '=', True)])
-        baptized_count = Partner.search_count([('x_is_church_member', '=', True), ('active', '=', True), ('x_baptized', '=', True)])
+        company_domain = self._get_company_domain()
+        
+        member_count = Partner.search_count(
+            company_domain + [('x_is_church_member', '=', True), ('active', '=', True)]
+        )
+        baptized_count = Partner.search_count(
+            company_domain + [('x_is_church_member', '=', True), ('active', '=', True), ('x_baptized', '=', True)]
+        )
         non_baptized_count = member_count - baptized_count
         
-        # We search past attendance reports (no constraints on state since reports don't have one)
-        reports = AttendanceReport.search([])
+        # Reports filtered by company
+        reports = AttendanceReport.search(company_domain)
         if reports:
             avg_attendance = sum(reports.mapped('total_attendance')) / len(reports)
             avg_presencial = sum(reports.mapped('presencial_count')) / len(reports)
@@ -61,11 +75,13 @@ class ChurchDashboard(models.TransientModel):
 
     def _compute_yearly_activities(self):
         today = date.today()
+        company_domain = self._get_company_domain()
         # Find activities for this current year
-        activities = self.env['church.activity'].search([
-            ('date', '>=', f'{today.year}-01-01'),
-            ('date', '<=', f'{today.year}-12-31')
-        ], order='date asc')
+        activities = self.env['church.activity'].search(
+            company_domain + [
+                ('date', '>=', f'{today.year}-01-01'),
+                ('date', '<=', f'{today.year}-12-31')
+            ], order='date asc')
         for record in self:
             record.yearly_activity_ids = [(6, 0, activities.ids)]
 
@@ -78,12 +94,16 @@ class ChurchDashboard(models.TransientModel):
         start_next_week = start_week + timedelta(days=7)
         end_next_week = start_next_week + timedelta(days=6)
 
-        # We search for members
-        members = self.env['res.partner'].search([
-            ('x_is_church_member', '=', True),
-            ('active', '=', True),
-            ('x_birthdate', '!=', False)
-        ])
+        company_domain = self._get_company_domain()
+
+        # We search for members filtered by company
+        members = self.env['res.partner'].search(
+            company_domain + [
+                ('x_is_church_member', '=', True),
+                ('active', '=', True),
+                ('x_birthdate', '!=', False)
+            ]
+        )
 
         for record in self:
             today_list = []

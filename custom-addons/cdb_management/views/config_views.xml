@@ -9,6 +9,7 @@
                 <field name="name" string="Nombre"/>
                 <field name="description"/>
                 <field name="color" widget="color_picker"/>
+                <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
                 <field name="active"/>
             </list>
         </field>
@@ -40,6 +41,7 @@
                 <field name="name" string="Nombre"/>
                 <field name="description"/>
                 <field name="color" widget="color_picker"/>
+                <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
                 <field name="active"/>
             </list>
         </field>

@@ -19,6 +19,10 @@ class ChurchFamilyRelation(models.Model):
                                         domain=[('x_is_church_member', '=', True)])
     non_member_name = fields.Char(string='Name (non member)')
     x_birthdate = fields.Date(string='Birthdate', compute='_compute_x_birthdate', inverse='_inverse_x_birthdate', store=True)
+    company_id = fields.Many2one(
+        'res.company', string='Company',
+        related='partner_id.company_id', store=True,
+    )
 
     @api.depends('is_member', 'related_partner_id.x_birthdate')
     def _compute_x_birthdate(self):

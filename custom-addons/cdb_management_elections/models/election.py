@@ -19,6 +19,11 @@ class CdbElection(models.Model):
     ], string='State', default='draft', required=True, tracking=True)
     description = fields.Html(string='Description')
 
+    company_id = fields.Many2one(
+        'res.company', string='Company',
+        default=lambda self: self.env.company, required=True,
+    )
+
     position_ids = fields.One2many(
         'cdb.election.position', 'election_id', string='Positions')
     candidate_ids = fields.One2many(
@@ -127,6 +132,10 @@ class CdbElectionPosition(models.Model):
     total_position_votes = fields.Integer(
         string='Total votes', compute='_compute_total_position_votes',
         store=True)
+    company_id = fields.Many2one(
+        'res.company', string='Company',
+        related='election_id.company_id', store=True,
+    )
 
     @api.depends('candidate_ids.votes')
     def _compute_total_position_votes(self):
@@ -158,6 +167,10 @@ class CdbElectionCandidate(models.Model):
         digits=(5, 2))
     is_winner = fields.Boolean(string='Winner', default=False)
     winner_rank = fields.Integer(string='Rank', default=0)
+    company_id = fields.Many2one(
+        'res.company', string='Company',
+        related='election_id.company_id', store=True,
+    )
 
     _sql_constraints = [
         ('unique_candidate_per_election',
@@ -241,3 +254,7 @@ class CdbElectionVoteLog(models.Model):
     delta = fields.Integer(string='Delta')
     user_id = fields.Many2one(
         'res.users', string='User', default=lambda self: self.env.uid)
+    company_id = fields.Many2one(
+        'res.company', string='Company',
+        related='election_id.company_id', store=True,
+    )

@@ -17,6 +17,7 @@
                 <field name="x_baptized" widget="boolean_toggle"/>
                 <field name="x_applies_for_assembly" widget="boolean_toggle"/>
                 <field name="active" widget="boolean_toggle"/>
+                <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
                 <field name="x_church_entry_date"/>
             </list>
         </field>
@@ -42,9 +43,9 @@
                                 <field name="name" invisible="1"/>
                             </h1>
                             <div class="d-flex align-items-center">
-                                <label for="active" string="Active member" class="me-2"/>
                                 <field name="active" widget="boolean_toggle"/>
                             </div>
+                            <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
                             <field name="x_is_church_member" invisible="1"/>
                         </div>
                     </div>

@@ -9,6 +9,7 @@
                 <field name="name"/>
                 <field name="presencial_count" sum="Total Presencial"/>
                 <field name="online_count" sum="Total Online"/>
+                <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
                 <field name="total_attendance" sum="Total Attendance"/>
             </list>
         </field>
@@ -28,6 +29,7 @@
                     <group>
                         <group>
                             <field name="date"/>
+                            <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
                         </group>
                         <group>
                             <field name="presencial_count"/>

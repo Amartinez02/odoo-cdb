@@ -12,6 +12,10 @@ class ChurchAttendanceReport(models.Model):
     total_attendance = fields.Integer(string='Total Attendance', compute='_compute_total_attendance', store=True)
     new_attendee_line_ids = fields.One2many('church.attendance.report.new.line', 'report_id', string='New visitors')
     notes = fields.Text(string='Notes')
+    company_id = fields.Many2one(
+        'res.company', string='Company',
+        default=lambda self: self.env.company, required=True,
+    )
 
     @api.depends('presencial_count', 'online_count')
     def _compute_total_attendance(self):
@@ -34,3 +38,7 @@ class ChurchAttendanceReportNewLine(models.Model):
     name = fields.Char(string='Name', required=True)
     invited_by_id = fields.Many2one('res.partner', string='Invited by', domain=[('x_is_church_member', '=', True)])
     visit_reason = fields.Char(string='Visit Reason')
+    company_id = fields.Many2one(
+        'res.company', string='Company',
+        related='report_id.company_id', store=True,
+    )

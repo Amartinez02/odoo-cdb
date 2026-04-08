@@ -14,13 +14,13 @@
                             <!-- Show the company logo -->
                             <img t-attf-src="/web/binary/company_logo{{ '?dbname='+db if db else '' }}" alt="Logo"/>
                         </div>
-                        <h1 class="o_cdb_welcome_text">Hola<br/>Casa de Bendición</h1>
+                        <h1 class="o_cdb_welcome_text">Hola<br/><t t-esc="res_company.name"/></h1>
                         <p class="o_cdb_mission_text">
                             Bienvenidos a nuestra plataforma de gestión eclesial. 
                             Unidos para servir con excelencia y amor.
                         </p>
                         <div class="o_cdb_login_footer_left">
-                            © <t t-esc="datetime.date.today().year"/> ACYM Casa de Bendición.
+                            © <t t-esc="datetime.date.today().year"/> <t t-esc="res_company.name"/>.
                         </div>
                     </div>
                 </div>
