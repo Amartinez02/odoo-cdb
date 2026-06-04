@@ -119,28 +119,26 @@ class CdbElectionController(http.Controller):
             'cdb_management_elections.cdb_election_results', values
         )
 
-    # ── QR Voting Page ─────────────────────────────────────────────────
+    # ── QR Voting Page (By Position) ───────────────────────────────────
 
     @http.route(
-        '/cdb/elections/<int:election_id>/vote/<int:candidate_id>',
+        '/cdb/elections/<int:election_id>/vote/position/<int:position_id>',
         type='http', auth='public',
     )
-    def election_vote_page(self, election_id, candidate_id, **kwargs):
+    def election_vote_page(self, election_id, position_id, **kwargs):
         election = request.env['cdb.election'].sudo().browse(election_id)
         if not election.exists():
             return request.not_found()
 
-        candidate = request.env['cdb.election.candidate'].sudo().browse(
-            candidate_id
+        position = request.env['cdb.election.position'].sudo().browse(
+            position_id
         )
-        if not candidate.exists() or candidate.election_id.id != election_id:
+        if not position.exists() or position.election_id.id != election_id:
             return request.not_found()
 
         values = {
             'election': election,
-            'candidate': candidate,
-            'position': candidate.position_id,
-            'partner': candidate.partner_id,
+            'position': position,
             'company_logo': self._get_company_logo(),
             'is_open': election.state == 'open',
             'languages': [],
@@ -150,14 +148,15 @@ class CdbElectionController(http.Controller):
             'cdb_management_elections.cdb_election_vote', values
         )
 
-    # ── Vote Submission (JSON) ─────────────────────────────────────────
+    # ── Vote Submission (JSON, By Position) ────────────────────────────
 
     @http.route(
-        '/cdb/elections/<int:election_id>/vote/<int:candidate_id>/submit',
+        '/cdb/elections/<int:election_id>/vote/position/<int:position_id>/submit',
         type='json', auth='public', methods=['POST'],
     )
-    def election_vote_submit(self, election_id, candidate_id, **kwargs):
+    def election_vote_submit(self, election_id, position_id, **kwargs):
         voter_code = kwargs.get('voter_code', '')
+        candidate_ids = kwargs.get('candidate_ids', [])
 
         election = request.env['cdb.election'].sudo().browse(election_id)
         if not election.exists():
@@ -169,13 +168,29 @@ class CdbElectionController(http.Controller):
                 'message': 'La votación no está abierta.',
             }
 
-        candidate = request.env['cdb.election.candidate'].sudo().browse(
-            candidate_id
+        position = request.env['cdb.election.position'].sudo().browse(
+            position_id
         )
-        if not candidate.exists() or candidate.election_id.id != election_id:
+        if not position.exists() or position.election_id.id != election_id:
             return {
                 'success': False,
-                'message': 'Candidato no válido.',
+                'message': 'Cargo no válido.',
+            }
+
+        # Check candidate list
+        if not candidate_ids:
+            return {
+                'success': False,
+                'message': 'Debe seleccionar al menos un candidato.',
+            }
+
+        if len(candidate_ids) > position.winners_count:
+            return {
+                'success': False,
+                'message': (
+                    f'No puede votar por más de {position.winners_count} '
+                    f'candidatos para este cargo.'
+                ),
             }
 
         # Validate voter code
@@ -189,57 +204,52 @@ class CdbElectionController(http.Controller):
                 'message': 'Código de votante inválido.',
             }
 
-        # Check how many times this voter has voted in this position
-        position = candidate.position_id
+        # Check if voter has already voted in this position
         votes_in_position = request.env['cdb.election.vote.log'].sudo().search_count([
             ('election_id', '=', election_id),
             ('voter_id', '=', voter.id),
-            ('candidate_id.position_id', '=', position.id),
+            ('candidate_id.position_id', '=', position_id),
             ('action', '=', 'add'),
         ])
-        if votes_in_position >= position.winners_count:
+        if votes_in_position > 0:
             return {
                 'success': False,
                 'message': (
-                    f'Ya has usado tus {position.winners_count} '
-                    f'voto(s) para la posición "{position.name}".'
+                    f'Ya has votado para el cargo "{position.name}".'
                 ),
             }
 
-        # Check if voter already voted for THIS specific candidate
-        already_voted = request.env['cdb.election.vote.log'].sudo().search_count([
-            ('election_id', '=', election_id),
-            ('voter_id', '=', voter.id),
-            ('candidate_id', '=', candidate_id),
-            ('action', '=', 'add'),
-        ])
-        if already_voted:
+        # Verify selected candidates belong to the position
+        valid_candidates = position.candidate_ids.filtered(
+            lambda c: c.id in candidate_ids
+        )
+        if len(valid_candidates) != len(candidate_ids):
             return {
                 'success': False,
-                'message': 'Ya votaste por este candidato.',
+                'message': (
+                    'Uno o más candidatos no son válidos para este cargo.'
+                ),
             }
 
-        # Register the vote
-        candidate.sudo().write({'votes': candidate.votes + 1})
-        request.env['cdb.election.vote.log'].sudo().create({
-            'election_id': election_id,
-            'candidate_id': candidate_id,
-            'voter_id': voter.id,
-            'action': 'add',
-            'delta': 1,
-        })
+        # Register the votes
+        for candidate in valid_candidates:
+            candidate.sudo().write({'votes': candidate.votes + 1})
+            request.env['cdb.election.vote.log'].sudo().create({
+                'election_id': election_id,
+                'candidate_id': candidate.id,
+                'voter_id': voter.id,
+                'action': 'add',
+                'delta': 1,
+            })
+            # Send bus notification for live board
+            candidate._send_bus_notification()
 
-        # Send bus notification for live board
-        candidate._send_bus_notification()
-
+        # Build list of names for confirmation/feedback
+        cand_names = ", ".join(valid_candidates.mapped('partner_id.name'))
         return {
             'success': True,
             'message': (
-                f'¡Voto registrado para {candidate.partner_id.name}! '
-                f'Gracias por participar.'
-            ),
-            'votes_remaining': (
-                position.winners_count - votes_in_position - 1
+                f'¡Voto registrado para {cand_names}! Gracias por participar.'
             ),
         }
 

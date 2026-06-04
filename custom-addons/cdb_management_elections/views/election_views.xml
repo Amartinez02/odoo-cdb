@@ -122,6 +122,8 @@
                                            widget="handle"/>
                                     <field name="name"/>
                                     <field name="winners_count"/>
+                                    <field name="vote_url" widget="url" readonly="1"/>
+                                    <field name="qr_code" widget="image" options="{'size': [60, 60]}" readonly="1"/>
                                     <field name="total_position_votes"/>
                                 </list>
                             </field>
@@ -148,8 +150,6 @@
                                            decoration-bf="1"/>
                                     <field name="percentage"
                                            widget="progressbar"/>
-                                    <field name="vote_url" widget="url" readonly="1"/>
-                                    <field name="qr_code" widget="image" options="{'size': [60, 60]}" readonly="1"/>
                                     <field name="winner_rank"
                                            widget="badge"
                                            readonly="1"

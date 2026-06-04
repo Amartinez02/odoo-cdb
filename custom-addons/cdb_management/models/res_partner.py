@@ -31,10 +31,23 @@ class ResPartner(models.Model):
                 f"{self.x_first_name or ''} {self.x_last_name or ''}"
             ).strip()
 
+    x_voter_code = fields.Char(string='Voter code', size=6, copy=False)
+
+    def _generate_voter_code(self):
+        import random
+        import string
+        for _attempt in range(1000):
+            code = ''.join(random.choices(string.digits, k=6))
+            if not self.env['res.partner'].search_count([('x_voter_code', '=', code)]):
+                return code
+        return False
+
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
             self._sync_name_from_parts(vals)
+            if vals.get('x_is_church_member') and not vals.get('x_voter_code'):
+                vals['x_voter_code'] = self._generate_voter_code()
         return super().create(vals_list)
 
     def write(self, vals):
@@ -52,7 +65,13 @@ class ResPartner(models.Model):
                     parts = (vals['name'] or '').strip().split(' ', 1)
                     vals['x_first_name'] = parts[0] if parts else ''
                     vals['x_last_name'] = parts[1] if len(parts) > 1 else ''
-        return super().write(vals)
+        
+        res = super().write(vals)
+        if vals.get('x_is_church_member') or 'x_is_church_member' in vals:
+            for record in self:
+                if record.x_is_church_member and not record.x_voter_code:
+                    record.sudo().write({'x_voter_code': record._generate_voter_code()})
+        return res
 
     @api.model
     def _sync_name_from_parts(self, vals):

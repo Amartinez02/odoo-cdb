@@ -161,11 +161,13 @@ class CdbElection(models.Model):
         existing_partner_ids = set(self.voter_ids.mapped('partner_id.id'))
         new_voters = []
         for member in members:
+            # Ensure the member has a voter code assigned
+            if not member.x_voter_code:
+                member.sudo().write({'x_voter_code': member._generate_voter_code()})
             if member.id not in existing_partner_ids:
                 new_voters.append({
                     'election_id': self.id,
                     'partner_id': member.id,
-                    'voter_code': self._generate_voter_code(),
                 })
         if new_voters:
             self.env['cdb.election.voter'].create(new_voters)
@@ -180,20 +182,6 @@ class CdbElection(models.Model):
                 'type': 'success',
             },
         }
-
-    def _generate_voter_code(self):
-        """Generate a unique 6-digit numeric code for a voter."""
-        existing_codes = set(
-            self.voter_ids.mapped('voter_code')
-        )
-        for _attempt in range(1000):
-            code = ''.join(random.choices(string.digits, k=6))
-            if code not in existing_codes:
-                return code
-        raise UserError(
-            "Could not generate a unique voter code. "
-            "Too many voters registered."
-        )
 
 
 class CdbElectionPosition(models.Model):
@@ -216,11 +204,46 @@ class CdbElectionPosition(models.Model):
         related='election_id.company_id', store=True,
     )
 
+    vote_url = fields.Char(
+        string='Vote URL', compute='_compute_vote_url', store=False)
+    qr_code = fields.Binary(
+        string='QR Code', compute='_compute_qr_code', store=False)
+
     @api.depends('candidate_ids.votes')
     def _compute_total_position_votes(self):
         for position in self:
             position.total_position_votes = sum(
                 position.candidate_ids.mapped('votes'))
+
+    def _compute_vote_url(self):
+        base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+        for position in self:
+            position.vote_url = (
+                f'{base_url}/cdb/elections/{position.election_id.id}'
+                f'/vote/position/{position.id}'
+            )
+
+    def _compute_qr_code(self):
+        if qrcode is None:
+            for position in self:
+                position.qr_code = False
+            return
+        for position in self:
+            if not position.vote_url:
+                position.qr_code = False
+                continue
+            qr = qrcode.QRCode(
+                version=1,
+                error_correction=qrcode.constants.ERROR_CORRECT_M,
+                box_size=10,
+                border=4,
+            )
+            qr.add_data(position.vote_url)
+            qr.make(fit=True)
+            img = qr.make_image(fill_color='#6b1520', back_color='white')
+            buffer = io.BytesIO()
+            img.save(buffer, format='PNG')
+            position.qr_code = base64.b64encode(buffer.getvalue())
 
 
 class CdbElectionCandidate(models.Model):
@@ -251,11 +274,7 @@ class CdbElectionCandidate(models.Model):
         related='election_id.company_id', store=True,
     )
 
-    # QR voting fields
-    vote_url = fields.Char(
-        string='Vote URL', compute='_compute_vote_url', store=False)
-    qr_code = fields.Binary(
-        string='QR Code', compute='_compute_qr_code', store=False)
+
 
     _sql_constraints = [
         ('unique_candidate_per_election',
@@ -281,35 +300,7 @@ class CdbElectionCandidate(models.Model):
             else:
                 candidate.percentage = 0.0
 
-    def _compute_vote_url(self):
-        base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
-        for candidate in self:
-            candidate.vote_url = (
-                f'{base_url}/cdb/elections/{candidate.election_id.id}'
-                f'/vote/{candidate.id}'
-            )
 
-    def _compute_qr_code(self):
-        if qrcode is None:
-            for candidate in self:
-                candidate.qr_code = False
-            return
-        for candidate in self:
-            if not candidate.vote_url:
-                candidate.qr_code = False
-                continue
-            qr = qrcode.QRCode(
-                version=1,
-                error_correction=qrcode.constants.ERROR_CORRECT_M,
-                box_size=10,
-                border=4,
-            )
-            qr.add_data(candidate.vote_url)
-            qr.make(fit=True)
-            img = qr.make_image(fill_color='#6b1520', back_color='white')
-            buffer = io.BytesIO()
-            img.save(buffer, format='PNG')
-            candidate.qr_code = base64.b64encode(buffer.getvalue())
 
     # ── Vote actions ───────────────────────────────────────────────────
 
@@ -389,7 +380,7 @@ class CdbElectionVoter(models.Model):
         'res.partner', string='Voter', required=True,
         domain="[('x_is_church_member', '=', True)]")
     voter_code = fields.Char(
-        string='Voter code', size=6, readonly=True, copy=False)
+        string='Voter code', related='partner_id.x_voter_code', store=True, readonly=True)
     vote_log_ids = fields.One2many(
         'cdb.election.vote.log', 'voter_id', string='Vote log')
     vote_count = fields.Integer(

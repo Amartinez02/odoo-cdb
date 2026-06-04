@@ -749,11 +749,11 @@
     </template>
 
     <!-- ══════════════════════════════════════════════════════════════
-         QR Voting Page Template
+         QR Voting Page Template (By Position)
          ══════════════════════════════════════════════════════════════ -->
     <template id="cdb_election_vote" name="Election voting page">
         <t t-call="web.frontend_layout">
-            <t t-set="title" t-valuef="Votar: #{candidate.partner_id.name}"/>
+            <t t-set="title" t-valuef="Votar: #{position.name}"/>
 
             <style>
                 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap');
@@ -828,30 +828,13 @@
                     letter-spacing: 0.05em;
                 }
 
-                /* Candidate details */
-                .candidate-info {
-                    padding: 2rem 1.5rem 1.5rem;
+                /* Position/Cargo Details */
+                .position-info {
+                    padding: 1.5rem 1.5rem 0.5rem;
                     text-align: center;
                     display: flex;
                     flex-direction: column;
                     align-items: center;
-                }
-
-                .candidate-avatar {
-                    width: 110px;
-                    height: 110px;
-                    border-radius: 50%;
-                    object-fit: cover;
-                    border: 4px solid #ffffff;
-                    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
-                    margin-bottom: 1.25rem;
-                }
-
-                .candidate-name {
-                    font-size: 1.35rem;
-                    font-weight: 800;
-                    color: var(--cdb-text);
-                    margin-bottom: 0.25rem;
                 }
 
                 .position-badge {
@@ -865,6 +848,111 @@
                     background: rgba(107, 21, 32, 0.06);
                     color: var(--cdb-primary);
                     border: 1px solid rgba(107, 21, 32, 0.1);
+                    margin-bottom: 0.5rem;
+                }
+
+                .position-name {
+                    font-size: 1.45rem;
+                    font-weight: 800;
+                    color: var(--cdb-text);
+                    margin-bottom: 0.25rem;
+                    line-height: 1.2;
+                }
+
+                .vote-instructions {
+                    font-size: 0.85rem;
+                    color: var(--cdb-muted);
+                    margin-top: 0.25rem;
+                }
+
+                /* Candidate Selection List */
+                .candidate-selection-container {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 0.75rem;
+                    margin-bottom: 1.5rem;
+                    max-height: 280px;
+                    overflow-y: auto;
+                    padding: 0.25rem;
+                }
+
+                .candidate-option-card {
+                    display: flex;
+                    align-items: center;
+                    gap: 1rem;
+                    padding: 0.75rem 1rem;
+                    border: 2px solid var(--cdb-border);
+                    border-radius: 14px;
+                    cursor: pointer;
+                    transition: border-color 0.2s, background-color 0.2s, box-shadow 0.2s;
+                    user-select: none;
+                }
+
+                .candidate-option-card:hover {
+                    background-color: #f9fafb;
+                    border-color: var(--cdb-muted);
+                }
+
+                .candidate-option-card.selected {
+                    background-color: rgba(212, 168, 67, 0.08);
+                    border-color: var(--cdb-accent);
+                    box-shadow: 0 4px 12px rgba(212, 168, 67, 0.12);
+                }
+
+                .candidate-option-avatar {
+                    width: 48px;
+                    height: 48px;
+                    border-radius: 50%;
+                    object-fit: cover;
+                    border: 2px solid #ffffff;
+                    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+                    flex-shrink: 0;
+                }
+
+                .candidate-option-details {
+                    flex-grow: 1;
+                    min-width: 0;
+                }
+
+                .candidate-option-name {
+                    font-weight: 600;
+                    font-size: 0.95rem;
+                    color: var(--cdb-text);
+                    display: block;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+
+                .selection-control {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    flex-shrink: 0;
+                }
+
+                .selection-control input[type="radio"],
+                .selection-control input[type="checkbox"] {
+                    width: 20px;
+                    height: 20px;
+                    accent-color: var(--cdb-primary);
+                    cursor: pointer;
+                }
+
+                /* Scrollbar styling */
+                .candidate-selection-container::-webkit-scrollbar {
+                    width: 6px;
+                }
+                .candidate-selection-container::-webkit-scrollbar-track {
+                    background: #f1f1f1;
+                    border-radius: 10px;
+                }
+                .candidate-selection-container::-webkit-scrollbar-thumb {
+                    background: #c1c1c1;
+                    border-radius: 10px;
+                }
+                .candidate-selection-container::-webkit-scrollbar-thumb:hover {
+                    background: #a8a8a8;
                 }
 
                 /* Form area */
@@ -1094,20 +1182,53 @@
                         <div class="election-title"><t t-out="election.name"/></div>
                     </div>
 
-                    <!-- Candidate details -->
-                    <div class="candidate-info">
-                        <img t-att-src="'/web/image/res.partner/%s/image_128' % partner.id"
-                             alt="" class="candidate-avatar"
-                             onerror="this.src='/cdb_management_elections/static/src/img/default_avatar.svg'"/>
-                        <div class="candidate-name"><t t-out="partner.name"/></div>
+                    <!-- Position details -->
+                    <div class="position-info">
                         <div class="position-badge">
                             <span>🏛</span>
-                            <t t-out="position.name"/>
+                            Cargo Electivo
+                        </div>
+                        <div class="position-name"><t t-out="position.name"/></div>
+                        <div class="vote-instructions">
+                            <t t-if="position.winners_count == 1">
+                                Seleccione un (1) candidato de la lista.
+                            </t>
+                            <t t-else="">
+                                Seleccione hasta <strong t-out="position.winners_count"/> candidatos.
+                            </t>
                         </div>
                     </div>
 
                     <!-- Form / Input -->
                     <div class="form-area" t-if="is_open">
+                        <!-- Candidate Selection Container -->
+                        <div class="candidate-selection-container" id="candidates-container">
+                            <t t-if="not position.candidate_ids">
+                                <p class="text-center text-muted py-4">No hay candidatos registrados para este cargo.</p>
+                            </t>
+                            <t t-else="">
+                                <t t-foreach="position.candidate_ids" t-as="cand">
+                                    <div class="candidate-option-card" t-att-data-candidate-id="cand.id" t-att-data-candidate-name="cand.partner_id.name">
+                                        <div class="selection-control">
+                                            <t t-if="position.winners_count == 1">
+                                                <input type="radio" name="candidate_selection" t-att-id="'cand_%s' % cand.id" t-att-value="cand.id"/>
+                                            </t>
+                                            <t t-else="">
+                                                <input type="checkbox" name="candidate_selection" t-att-id="'cand_%s' % cand.id" t-att-value="cand.id"/>
+                                            </t>
+                                        </div>
+                                        <img t-att-src="'/web/image/res.partner/%s/image_128' % cand.partner_id.id"
+                                             alt="" class="candidate-option-avatar"
+                                             onerror="this.src='/cdb_management_elections/static/src/img/default_avatar.svg'"/>
+                                        <div class="candidate-option-details">
+                                            <span class="candidate-option-name"><t t-out="cand.partner_id.name"/></span>
+                                        </div>
+                                    </div>
+                                </t>
+                            </t>
+                        </div>
+
+                        <!-- Verification Code Input -->
                         <div class="input-group">
                             <label class="input-label" for="voter-code">Código de Votante</label>
                             <div class="code-input-wrapper">
@@ -1143,7 +1264,7 @@
                     <div class="confirm-modal">
                         <h4 style="font-weight: 800; margin-bottom: 0.75rem;">¿Confirmar tu voto?</h4>
                         <p style="font-size: 0.95rem; color: var(--cdb-muted); line-height: 1.5; margin-bottom: 1.5rem;">
-                            ¿Estás seguro que deseas votar por <strong id="modal-cand-name"><t t-out="partner.name"/></strong> para la posición de <strong><t t-out="position.name"/></strong>?
+                            ¿Estás seguro que deseas votar por: <br/><strong id="modal-cand-name">Candidato</strong><br/> para el cargo de <strong><t t-out="position.name"/></strong>?
                         </p>
                         <div class="modal-buttons">
                             <button class="btn-modal-cancel" id="btn-modal-cancel">Cancelar</button>
@@ -1165,36 +1286,115 @@
                     const votingCard = document.getElementById('voting-card');
                     const successCard = document.getElementById('success-card');
                     const successMessage = document.getElementById('success-message');
+                    const modalCandName = document.getElementById('modal-cand-name');
 
                     const electionId = <t t-out="election.id"/>;
-                    const candidateId = <t t-out="candidate.id"/>;
+                    const positionId = <t t-out="position.id"/>;
+                    const winnersCount = <t t-out="position.winners_count"/>;
 
-                    if (!voterInput) return;
-
-                    // Form validation
-                    voterInput.addEventListener('input', function() {
-                        // Allow only numbers
-                        this.value = this.value.replace(/[^0-9]/g, '');
-                        
-                        if (this.value.length === 6) {
+                    const candidateCards = document.querySelectorAll('.candidate-option-card');
+                    
+                    function updateSubmitButtonState() {
+                        const checkedCount = getSelectedCandidateIds().length;
+                        const codeLength = voterInput ? voterInput.value.length : 0;
+                        if (checkedCount > 0 &amp;&amp; codeLength === 6) {
                             btnSubmit.disabled = false;
                         } else {
                             btnSubmit.disabled = true;
                         }
-                        
-                        validationError.classList.add('d-none');
+                    }
+
+                    function getSelectedCandidateIds() {
+                        const ids = [];
+                        candidateCards.forEach(card => {
+                            const input = card.querySelector('input');
+                            if (input &amp;&amp; input.checked) {
+                                ids.push(parseInt(input.value, 10));
+                            }
+                        });
+                        return ids;
+                    }
+
+                    function getSelectedCandidateNames() {
+                        const names = [];
+                        candidateCards.forEach(card => {
+                            const input = card.querySelector('input');
+                            if (input &amp;&amp; input.checked) {
+                                names.push(card.dataset.candidateName);
+                            }
+                        });
+                        return names;
+                    }
+
+                    candidateCards.forEach(card => {
+                        const input = card.querySelector('input');
+                        if (!input) return;
+
+                        // Click on card
+                        card.addEventListener('click', function(e) {
+                            if (e.target.tagName === 'INPUT') {
+                                handleInputToggle(input, card);
+                                return;
+                            }
+                            
+                            input.checked = !input.checked;
+                            handleInputToggle(input, card);
+                        });
                     });
 
-                    // Trigger submit on enter
-                    voterInput.addEventListener('keypress', function(e) {
-                        if (e.key === 'Enter' &amp;&amp; this.value.length === 6) {
-                            e.preventDefault();
-                            btnSubmit.click();
+                    function handleInputToggle(input, card) {
+                        if (winnersCount === 1) {
+                            if (input.checked) {
+                                // Unselect all other cards
+                                candidateCards.forEach(c => {
+                                    if (c !== card) {
+                                        c.classList.remove('selected');
+                                        const otherInput = c.querySelector('input');
+                                        if (otherInput) otherInput.checked = false;
+                                    }
+                                });
+                                card.classList.add('selected');
+                            } else {
+                                card.classList.remove('selected');
+                            }
+                        } else {
+                            const checkedCount = getSelectedCandidateIds().length;
+                            if (checkedCount > winnersCount) {
+                                // Exceeded winners_count, revert check
+                                input.checked = false;
+                                alert(`Solo puedes elegir hasta ${winnersCount} candidatos.`);
+                            } else {
+                                if (input.checked) {
+                                    card.classList.add('selected');
+                                } else {
+                                    card.classList.remove('selected');
+                                }
+                            }
                         }
-                    });
+                        updateSubmitButtonState();
+                    }
+
+                    if (voterInput) {
+                        // Form validation
+                        voterInput.addEventListener('input', function() {
+                            this.value = this.value.replace(/[^0-9]/g, '');
+                            updateSubmitButtonState();
+                            validationError.classList.add('d-none');
+                        });
+
+                        // Trigger submit on enter
+                        voterInput.addEventListener('keypress', function(e) {
+                            if (e.key === 'Enter' &amp;&amp; !btnSubmit.disabled) {
+                                e.preventDefault();
+                                btnSubmit.click();
+                            }
+                        });
+                    }
 
                     // Open confirmation modal
                     btnSubmit.addEventListener('click', function() {
+                        const names = getSelectedCandidateNames();
+                        modalCandName.textContent = names.join(', ');
                         confirmModal.classList.add('active');
                     });
 
@@ -1206,14 +1406,14 @@
                     // Submit vote
                     btnConfirm.addEventListener('click', function() {
                         const voterCode = voterInput.value;
+                        const selectedIds = getSelectedCandidateIds();
                         
-                        // Disable buttons &amp; show loading spinner
                         btnConfirm.disabled = true;
                         btnCancel.disabled = true;
                         btnConfirm.innerHTML = '<span class="spinner"></span>Enviando...';
 
                         // Call backend JSON route
-                        fetch(`/cdb/elections/${electionId}/vote/${candidateId}/submit`, {
+                        fetch(`/cdb/elections/${electionId}/vote/position/${positionId}/submit`, {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json'
@@ -1221,7 +1421,8 @@
                             body: JSON.stringify({
                                 jsonrpc: '2.0',
                                 params: {
-                                    voter_code: voterCode
+                                    voter_code: voterCode,
+                                    candidate_ids: selectedIds
                                 }
                             })
                         })
@@ -1229,19 +1430,16 @@
                         .then(data => {
                             confirmModal.classList.remove('active');
                             
-                            // Restore button state in case we need to retry
                             btnConfirm.disabled = false;
                             btnCancel.disabled = false;
                             btnConfirm.innerHTML = 'Confirmar Voto';
 
                             const result = data.result;
                             if (result &amp;&amp; result.success) {
-                                // Show success screen
                                 successMessage.textContent = result.message;
                                 votingCard.classList.add('d-none');
                                 successCard.classList.remove('d-none');
                             } else {
-                                // Show error
                                 validationError.textContent = result ? result.message : 'Error al registrar el voto.';
                                 validationError.classList.remove('d-none');
                             }
@@ -1250,7 +1448,6 @@
                             console.error(err);
                             confirmModal.classList.remove('active');
                             
-                            // Restore button state
                             btnConfirm.disabled = false;
                             btnCancel.disabled = false;
                             btnConfirm.innerHTML = 'Confirmar Voto';

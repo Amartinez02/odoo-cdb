@@ -8,6 +8,7 @@
         <field name="arch" type="xml">
             <list string="Church members" limit="300" multi_edit="1">
                 <field name="name"/>
+                <field name="x_voter_code" decoration-bf="1"/>
                 <field name="x_age"/>
                 <field name="x_gender"/>
                 <field name="phone"/>
@@ -81,6 +82,7 @@
                                 <group>
                                     <field name="x_baptized"/>
                                     <field name="x_applies_for_assembly"/>
+                                    <field name="x_voter_code" readonly="1" decoration-bf="1"/>
                                     <field name="x_baptism_date" invisible="not x_baptized"/>
                                     <field name="x_church_entry_date"/>
                                 </group>
