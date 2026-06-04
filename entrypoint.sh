@@ -13,6 +13,8 @@ apt-get update && \
 apt-get install -y poppler-utils inotify-tools && \
 apt-get clean
 
+pip install "qrcode[pil]"
+
 # Configure database arguments
 DB_ARGS=()
 function check_config() {

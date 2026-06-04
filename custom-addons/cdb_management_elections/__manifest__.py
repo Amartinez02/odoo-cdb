@@ -1,6 +1,6 @@
 {
     'name': 'Church Elections (CDB)',
-    'version': '1.0',
+    'version': '1.1',
     'summary': 'Manage church elections, candidates, voting, and results.',
     'description': """
 Church Elections Management
@@ -16,6 +16,9 @@ This module extends Church Management (CDB) to provide:
     'author': 'Antigravity / Anthony Martinez',
     'website': 'https://github.com/Amartinez02/odoo-cdb',
     'depends': ['cdb_management', 'bus'],
+    'external_dependencies': {
+        'python': ['qrcode'],
+    },
     'data': [
         'security/security.xml',
         'security/ir.model.access.csv',

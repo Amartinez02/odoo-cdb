@@ -7,3 +7,5 @@ access_cdb_election_candidate_viewer,cdb.election.candidate.viewer,model_cdb_ele
 access_cdb_election_candidate_manager,cdb.election.candidate.manager,model_cdb_election_candidate,group_cdb_elections_manager,1,1,1,1
 access_cdb_election_vote_log_viewer,cdb.election.vote.log.viewer,model_cdb_election_vote_log,group_cdb_elections_viewer,1,0,0,0
 access_cdb_election_vote_log_manager,cdb.election.vote.log.manager,model_cdb_election_vote_log,group_cdb_elections_manager,1,1,1,1
+access_cdb_election_voter_viewer,cdb.election.voter.viewer,model_cdb_election_voter,group_cdb_elections_viewer,1,0,0,0
+access_cdb_election_voter_manager,cdb.election.voter.manager,model_cdb_election_voter,group_cdb_elections_manager,1,1,1,1

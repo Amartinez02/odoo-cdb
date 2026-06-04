@@ -1,5 +1,15 @@
+import base64
+import io
+import random
+import string
+
 from odoo import models, fields, api
 from odoo.exceptions import UserError, ValidationError
+
+try:
+    import qrcode
+except ImportError:
+    qrcode = None
 
 
 class CdbElection(models.Model):
@@ -28,17 +38,26 @@ class CdbElection(models.Model):
         'cdb.election.position', 'election_id', string='Positions')
     candidate_ids = fields.One2many(
         'cdb.election.candidate', 'election_id', string='Candidates')
+    voter_ids = fields.One2many(
+        'cdb.election.voter', 'election_id', string='Voters')
 
     total_votes = fields.Integer(
         string='Total votes', compute='_compute_totals', store=True)
     total_candidates = fields.Integer(
         string='Total candidates', compute='_compute_totals', store=True)
+    total_voters = fields.Integer(
+        string='Total voters', compute='_compute_total_voters', store=True)
 
     @api.depends('candidate_ids.votes')
     def _compute_totals(self):
         for election in self:
             election.total_votes = sum(election.candidate_ids.mapped('votes'))
             election.total_candidates = len(election.candidate_ids)
+
+    @api.depends('voter_ids')
+    def _compute_total_voters(self):
+        for election in self:
+            election.total_voters = len(election.voter_ids)
 
     # ── State transitions ──────────────────────────────────────────────
 
@@ -116,6 +135,66 @@ class CdbElection(models.Model):
             'target': 'new',
         }
 
+    def action_view_voters(self):
+        self.ensure_one()
+        return {
+            'name': 'Registered Voters',
+            'type': 'ir.actions.act_window',
+            'res_model': 'cdb.election.voter',
+            'view_mode': 'list,form',
+            'domain': [('election_id', '=', self.id)],
+            'context': {'default_election_id': self.id},
+        }
+
+    # ── Voter registration ────────────────────────────────────────────
+
+    def action_register_voters(self):
+        """Register all church members as voters for this election."""
+        self.ensure_one()
+        if self.state != 'draft':
+            raise UserError(
+                "Voters can only be registered while the election is in draft."
+            )
+        members = self.env['res.partner'].search([
+            ('x_is_church_member', '=', True),
+        ])
+        existing_partner_ids = set(self.voter_ids.mapped('partner_id.id'))
+        new_voters = []
+        for member in members:
+            if member.id not in existing_partner_ids:
+                new_voters.append({
+                    'election_id': self.id,
+                    'partner_id': member.id,
+                    'voter_code': self._generate_voter_code(),
+                })
+        if new_voters:
+            self.env['cdb.election.voter'].create(new_voters)
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': 'Voters Registered',
+                'message': f'{len(new_voters)} new voters registered '
+                           f'({len(existing_partner_ids)} already existed).',
+                'sticky': False,
+                'type': 'success',
+            },
+        }
+
+    def _generate_voter_code(self):
+        """Generate a unique 6-digit numeric code for a voter."""
+        existing_codes = set(
+            self.voter_ids.mapped('voter_code')
+        )
+        for _attempt in range(1000):
+            code = ''.join(random.choices(string.digits, k=6))
+            if code not in existing_codes:
+                return code
+        raise UserError(
+            "Could not generate a unique voter code. "
+            "Too many voters registered."
+        )
+
 
 class CdbElectionPosition(models.Model):
     _name = 'cdb.election.position'
@@ -172,6 +251,12 @@ class CdbElectionCandidate(models.Model):
         related='election_id.company_id', store=True,
     )
 
+    # QR voting fields
+    vote_url = fields.Char(
+        string='Vote URL', compute='_compute_vote_url', store=False)
+    qr_code = fields.Binary(
+        string='QR Code', compute='_compute_qr_code', store=False)
+
     _sql_constraints = [
         ('unique_candidate_per_election',
          'UNIQUE(election_id, partner_id)',
@@ -195,6 +280,36 @@ class CdbElectionCandidate(models.Model):
                 candidate.percentage = (candidate.votes / total) * 100
             else:
                 candidate.percentage = 0.0
+
+    def _compute_vote_url(self):
+        base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+        for candidate in self:
+            candidate.vote_url = (
+                f'{base_url}/cdb/elections/{candidate.election_id.id}'
+                f'/vote/{candidate.id}'
+            )
+
+    def _compute_qr_code(self):
+        if qrcode is None:
+            for candidate in self:
+                candidate.qr_code = False
+            return
+        for candidate in self:
+            if not candidate.vote_url:
+                candidate.qr_code = False
+                continue
+            qr = qrcode.QRCode(
+                version=1,
+                error_correction=qrcode.constants.ERROR_CORRECT_M,
+                box_size=10,
+                border=4,
+            )
+            qr.add_data(candidate.vote_url)
+            qr.make(fit=True)
+            img = qr.make_image(fill_color='#6b1520', back_color='white')
+            buffer = io.BytesIO()
+            img.save(buffer, format='PNG')
+            candidate.qr_code = base64.b64encode(buffer.getvalue())
 
     # ── Vote actions ───────────────────────────────────────────────────
 
@@ -254,7 +369,48 @@ class CdbElectionVoteLog(models.Model):
     delta = fields.Integer(string='Delta')
     user_id = fields.Many2one(
         'res.users', string='User', default=lambda self: self.env.uid)
+    voter_id = fields.Many2one(
+        'cdb.election.voter', string='Voter', ondelete='set null')
     company_id = fields.Many2one(
         'res.company', string='Company',
         related='election_id.company_id', store=True,
     )
+
+
+class CdbElectionVoter(models.Model):
+    _name = 'cdb.election.voter'
+    _description = 'Election voter'
+    _order = 'partner_id'
+    _rec_name = 'partner_id'
+
+    election_id = fields.Many2one(
+        'cdb.election', string='Election', required=True, ondelete='cascade')
+    partner_id = fields.Many2one(
+        'res.partner', string='Voter', required=True,
+        domain="[('x_is_church_member', '=', True)]")
+    voter_code = fields.Char(
+        string='Voter code', size=6, readonly=True, copy=False)
+    vote_log_ids = fields.One2many(
+        'cdb.election.vote.log', 'voter_id', string='Vote log')
+    vote_count = fields.Integer(
+        string='Votes cast', compute='_compute_vote_count', store=True)
+    company_id = fields.Many2one(
+        'res.company', string='Company',
+        related='election_id.company_id', store=True,
+    )
+
+    _sql_constraints = [
+        ('unique_voter_per_election',
+         'UNIQUE(election_id, partner_id)',
+         'A voter can only be registered once per election.'),
+        ('unique_code_per_election',
+         'UNIQUE(election_id, voter_code)',
+         'Voter codes must be unique within an election.'),
+    ]
+
+    @api.depends('vote_log_ids')
+    def _compute_vote_count(self):
+        for voter in self:
+            voter.vote_count = len(
+                voter.vote_log_ids.filtered(lambda l: l.action == 'add')
+            )

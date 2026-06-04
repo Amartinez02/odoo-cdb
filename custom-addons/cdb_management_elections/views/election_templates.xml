@@ -748,4 +748,520 @@
         </t>
     </template>
 
+    <!-- ══════════════════════════════════════════════════════════════
+         QR Voting Page Template
+         ══════════════════════════════════════════════════════════════ -->
+    <template id="cdb_election_vote" name="Election voting page">
+        <t t-call="web.frontend_layout">
+            <t t-set="title" t-valuef="Votar: #{candidate.partner_id.name}"/>
+
+            <style>
+                @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap');
+
+                :root {
+                    --cdb-primary: #6b1520;
+                    --cdb-primary-light: #8b2030;
+                    --cdb-accent: #d4a843;
+                    --cdb-accent-glow: rgba(212, 168, 67, 0.35);
+                    --cdb-success: #16a34a;
+                    --cdb-danger: #dc2626;
+                    --cdb-bg: #f9fafb;
+                    --cdb-text: #111827;
+                    --cdb-muted: #6b7280;
+                    --cdb-border: #e5e7eb;
+                    --cdb-radius: 20px;
+                }
+
+                body, html {
+                    background: var(--cdb-bg) !important;
+                    font-family: 'Inter', system-ui, sans-serif;
+                    color: var(--cdb-text);
+                    margin: 0;
+                    padding: 0;
+                    min-height: 100vh;
+                }
+
+                /* Container */
+                .vote-wrapper {
+                    min-height: 100vh;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    padding: 1.5rem;
+                    background: radial-gradient(circle at top right, rgba(212, 168, 67, 0.1) 0%, transparent 60%),
+                                radial-gradient(circle at bottom left, rgba(107, 21, 32, 0.08) 0%, transparent 60%);
+                }
+
+                /* Card */
+                .vote-card {
+                    width: 100%;
+                    max-width: 440px;
+                    background: #ffffff;
+                    border-radius: var(--cdb-radius);
+                    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+                    border: 1px solid var(--cdb-border);
+                    overflow: hidden;
+                    transition: transform 0.3s ease, box-shadow 0.3s ease;
+                }
+
+                .vote-card-header {
+                    padding: 1.5rem 1.5rem 1rem;
+                    text-align: center;
+                    border-bottom: 1px solid var(--cdb-border);
+                    position: relative;
+                }
+
+                .logo-container {
+                    margin-bottom: 0.75rem;
+                }
+                .logo-img {
+                    height: 48px;
+                    object-fit: contain;
+                }
+
+                .election-title {
+                    font-size: 0.9rem;
+                    font-weight: 700;
+                    color: var(--cdb-primary);
+                    text-transform: uppercase;
+                    letter-spacing: 0.05em;
+                }
+
+                /* Candidate details */
+                .candidate-info {
+                    padding: 2rem 1.5rem 1.5rem;
+                    text-align: center;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                }
+
+                .candidate-avatar {
+                    width: 110px;
+                    height: 110px;
+                    border-radius: 50%;
+                    object-fit: cover;
+                    border: 4px solid #ffffff;
+                    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+                    margin-bottom: 1.25rem;
+                }
+
+                .candidate-name {
+                    font-size: 1.35rem;
+                    font-weight: 800;
+                    color: var(--cdb-text);
+                    margin-bottom: 0.25rem;
+                }
+
+                .position-badge {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 0.35rem;
+                    padding: 0.35rem 0.85rem;
+                    border-radius: 999px;
+                    font-size: 0.8rem;
+                    font-weight: 600;
+                    background: rgba(107, 21, 32, 0.06);
+                    color: var(--cdb-primary);
+                    border: 1px solid rgba(107, 21, 32, 0.1);
+                }
+
+                /* Form area */
+                .form-area {
+                    padding: 0 1.5rem 2rem;
+                }
+
+                .input-group {
+                    margin-bottom: 1.5rem;
+                    text-align: center;
+                }
+
+                .input-label {
+                    display: block;
+                    font-size: 0.825rem;
+                    font-weight: 600;
+                    color: var(--cdb-muted);
+                    margin-bottom: 0.5rem;
+                    text-transform: uppercase;
+                    letter-spacing: 0.05em;
+                }
+
+                .code-input-wrapper {
+                    position: relative;
+                    max-width: 240px;
+                    margin: 0 auto;
+                }
+
+                .code-input {
+                    width: 100%;
+                    padding: 0.75rem;
+                    font-size: 1.75rem;
+                    font-weight: 800;
+                    letter-spacing: 0.25em;
+                    text-align: center;
+                    border: 2px solid var(--cdb-border);
+                    border-radius: 12px;
+                    outline: none;
+                    transition: border-color 0.2s, box-shadow 0.2s;
+                }
+
+                .code-input:focus {
+                    border-color: var(--cdb-accent);
+                    box-shadow: 0 0 0 4px var(--cdb-accent-glow);
+                }
+
+                /* Button */
+                .btn-vote-submit {
+                    width: 100%;
+                    padding: 0.875rem;
+                    font-size: 1rem;
+                    font-weight: 700;
+                    color: #ffffff;
+                    background: linear-gradient(135deg, var(--cdb-primary) 0%, var(--cdb-primary-light) 100%);
+                    border: none;
+                    border-radius: 12px;
+                    cursor: pointer;
+                    transition: transform 0.15s, opacity 0.15s, box-shadow 0.15s;
+                    box-shadow: 0 4px 12px rgba(107, 21, 32, 0.15);
+                }
+
+                .btn-vote-submit:hover:not(:disabled) {
+                    transform: translateY(-1px);
+                    box-shadow: 0 6px 16px rgba(107, 21, 32, 0.25);
+                }
+
+                .btn-vote-submit:active:not(:disabled) {
+                    transform: translateY(0);
+                }
+
+                .btn-vote-submit:disabled {
+                    opacity: 0.6;
+                    cursor: not-allowed;
+                    background: var(--cdb-muted);
+                    box-shadow: none;
+                }
+
+                /* Status screens */
+                .status-screen {
+                    padding: 2.5rem 1.5rem;
+                    text-align: center;
+                }
+
+                .status-icon {
+                    width: 72px;
+                    height: 72px;
+                    border-radius: 50%;
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 2rem;
+                    margin-bottom: 1.5rem;
+                }
+
+                .status-success {
+                    background: rgba(22, 163, 74, 0.1);
+                    color: var(--cdb-success);
+                }
+
+                .status-error {
+                    background: rgba(220, 38, 38, 0.1);
+                    color: var(--cdb-danger);
+                }
+
+                .status-title {
+                    font-size: 1.25rem;
+                    font-weight: 800;
+                    margin-bottom: 0.5rem;
+                }
+
+                .status-desc {
+                    font-size: 0.95rem;
+                    color: var(--cdb-muted);
+                    line-height: 1.5;
+                }
+
+                /* Modal Overlay */
+                .confirm-modal-overlay {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    background: rgba(0, 0, 0, 0.4);
+                    backdrop-filter: blur(4px);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    z-index: 1000;
+                    opacity: 0;
+                    pointer-events: none;
+                    transition: opacity 0.25s ease;
+                    padding: 1.5rem;
+                }
+
+                .confirm-modal-overlay.active {
+                    opacity: 1;
+                    pointer-events: auto;
+                }
+
+                .confirm-modal {
+                    background: #ffffff;
+                    border-radius: 20px;
+                    width: 100%;
+                    max-width: 400px;
+                    padding: 1.75rem;
+                    text-align: center;
+                    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+                    transform: scale(0.9);
+                    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+                }
+
+                .confirm-modal-overlay.active .confirm-modal {
+                    transform: scale(1);
+                }
+
+                .modal-buttons {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 0.75rem;
+                    margin-top: 1.5rem;
+                }
+
+                .btn-modal-cancel {
+                    padding: 0.75rem;
+                    background: #f3f4f6;
+                    color: #4b5563;
+                    border: none;
+                    border-radius: 10px;
+                    font-weight: 600;
+                    cursor: pointer;
+                }
+
+                .btn-modal-confirm {
+                    padding: 0.75rem;
+                    background: var(--cdb-primary);
+                    color: #ffffff;
+                    border: none;
+                    border-radius: 10px;
+                    font-weight: 600;
+                    cursor: pointer;
+                }
+
+                /* Utility helper to hide elements */
+                .d-none {
+                    display: none !important;
+                }
+
+                /* Spinner */
+                .spinner {
+                    border: 3px solid rgba(255, 255, 255, 0.3);
+                    border-radius: 50%;
+                    border-top: 3px solid #ffffff;
+                    width: 20px;
+                    height: 20px;
+                    animation: spin 0.8s linear infinite;
+                    display: inline-block;
+                    vertical-align: middle;
+                    margin-right: 8px;
+                }
+
+                @keyframes spin {
+                    0% { transform: rotate(0deg); }
+                    100% { transform: rotate(360deg); }
+                }
+
+                /* Hide ALL Odoo chrome (navbar, footer, header) */
+                .o_footer, footer,
+                .o_main_navbar, nav.navbar, nav,
+                header, .navbar, .o_navbar,
+                #oe_main_menu_navbar,
+                .o_frontend_header,
+                .js_language_selector,
+                [role="navigation"] { display: none !important; }
+                main { padding-top: 0 !important; margin-top: 0 !important; }
+            </style>
+
+            <div class="vote-wrapper">
+                <div class="vote-card" id="voting-card">
+                    <!-- Header -->
+                    <div class="vote-card-header">
+                        <t t-if="company_logo">
+                            <div class="logo-container">
+                                <img t-att-src="company_logo" alt="Logo" class="logo-img"/>
+                            </div>
+                        </t>
+                        <div class="election-title"><t t-out="election.name"/></div>
+                    </div>
+
+                    <!-- Candidate details -->
+                    <div class="candidate-info">
+                        <img t-att-src="'/web/image/res.partner/%s/image_128' % partner.id"
+                             alt="" class="candidate-avatar"
+                             onerror="this.src='/cdb_management_elections/static/src/img/default_avatar.svg'"/>
+                        <div class="candidate-name"><t t-out="partner.name"/></div>
+                        <div class="position-badge">
+                            <span>🏛</span>
+                            <t t-out="position.name"/>
+                        </div>
+                    </div>
+
+                    <!-- Form / Input -->
+                    <div class="form-area" t-if="is_open">
+                        <div class="input-group">
+                            <label class="input-label" for="voter-code">Código de Votante</label>
+                            <div class="code-input-wrapper">
+                                <input type="tel" id="voter-code" class="code-input" maxlength="6" autocomplete="off" placeholder="••••••" pattern="[0-9]*" inputmode="numeric"/>
+                            </div>
+                            <div class="text-danger mt-2 d-none" style="font-size: 0.85rem; font-weight: 600;" id="validation-error"></div>
+                        </div>
+
+                        <button id="btn-submit" class="btn-vote-submit" disabled="disabled">
+                            Enviar Voto
+                        </button>
+                    </div>
+
+                    <!-- Closed message if election not open -->
+                    <div class="status-screen" t-else="">
+                        <div class="status-icon status-error">🔒</div>
+                        <div class="status-title">Votación Cerrada</div>
+                        <div class="status-desc">Esta elección no se encuentra activa para votación en este momento.</div>
+                    </div>
+                </div>
+
+                <!-- Success Screen -->
+                <div class="vote-card d-none" id="success-card">
+                    <div class="status-screen">
+                        <div class="status-icon status-success">✓</div>
+                        <div class="status-title" id="success-title">¡Voto Registrado!</div>
+                        <div class="status-desc" id="success-message">Tu voto ha sido contabilizado con éxito. Gracias por participar.</div>
+                    </div>
+                </div>
+
+                <!-- Confirm Modal -->
+                <div class="confirm-modal-overlay" id="confirm-modal">
+                    <div class="confirm-modal">
+                        <h4 style="font-weight: 800; margin-bottom: 0.75rem;">¿Confirmar tu voto?</h4>
+                        <p style="font-size: 0.95rem; color: var(--cdb-muted); line-height: 1.5; margin-bottom: 1.5rem;">
+                            ¿Estás seguro que deseas votar por <strong id="modal-cand-name"><t t-out="partner.name"/></strong> para la posición de <strong><t t-out="position.name"/></strong>?
+                        </p>
+                        <div class="modal-buttons">
+                            <button class="btn-modal-cancel" id="btn-modal-cancel">Cancelar</button>
+                            <button class="btn-modal-confirm" id="btn-modal-confirm">Confirmar Voto</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const voterInput = document.getElementById('voter-code');
+                    const btnSubmit = document.getElementById('btn-submit');
+                    const confirmModal = document.getElementById('confirm-modal');
+                    const btnCancel = document.getElementById('btn-modal-cancel');
+                    const btnConfirm = document.getElementById('btn-modal-confirm');
+                    const validationError = document.getElementById('validation-error');
+                    
+                    const votingCard = document.getElementById('voting-card');
+                    const successCard = document.getElementById('success-card');
+                    const successMessage = document.getElementById('success-message');
+
+                    const electionId = <t t-out="election.id"/>;
+                    const candidateId = <t t-out="candidate.id"/>;
+
+                    if (!voterInput) return;
+
+                    // Form validation
+                    voterInput.addEventListener('input', function() {
+                        // Allow only numbers
+                        this.value = this.value.replace(/[^0-9]/g, '');
+                        
+                        if (this.value.length === 6) {
+                            btnSubmit.disabled = false;
+                        } else {
+                            btnSubmit.disabled = true;
+                        }
+                        
+                        validationError.classList.add('d-none');
+                    });
+
+                    // Trigger submit on enter
+                    voterInput.addEventListener('keypress', function(e) {
+                        if (e.key === 'Enter' &amp;&amp; this.value.length === 6) {
+                            e.preventDefault();
+                            btnSubmit.click();
+                        }
+                    });
+
+                    // Open confirmation modal
+                    btnSubmit.addEventListener('click', function() {
+                        confirmModal.classList.add('active');
+                    });
+
+                    // Close modal
+                    btnCancel.addEventListener('click', function() {
+                        confirmModal.classList.remove('active');
+                    });
+
+                    // Submit vote
+                    btnConfirm.addEventListener('click', function() {
+                        const voterCode = voterInput.value;
+                        
+                        // Disable buttons &amp; show loading spinner
+                        btnConfirm.disabled = true;
+                        btnCancel.disabled = true;
+                        btnConfirm.innerHTML = '<span class="spinner"></span>Enviando...';
+
+                        // Call backend JSON route
+                        fetch(`/cdb/elections/${electionId}/vote/${candidateId}/submit`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                jsonrpc: '2.0',
+                                params: {
+                                    voter_code: voterCode
+                                }
+                            })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            confirmModal.classList.remove('active');
+                            
+                            // Restore button state in case we need to retry
+                            btnConfirm.disabled = false;
+                            btnCancel.disabled = false;
+                            btnConfirm.innerHTML = 'Confirmar Voto';
+
+                            const result = data.result;
+                            if (result &amp;&amp; result.success) {
+                                // Show success screen
+                                successMessage.textContent = result.message;
+                                votingCard.classList.add('d-none');
+                                successCard.classList.remove('d-none');
+                            } else {
+                                // Show error
+                                validationError.textContent = result ? result.message : 'Error al registrar el voto.';
+                                validationError.classList.remove('d-none');
+                            }
+                        })
+                        .catch(err => {
+                            console.error(err);
+                            confirmModal.classList.remove('active');
+                            
+                            // Restore button state
+                            btnConfirm.disabled = false;
+                            btnCancel.disabled = false;
+                            btnConfirm.innerHTML = 'Confirmar Voto';
+
+                            validationError.textContent = 'Error de conexión. Intente nuevamente.';
+                            validationError.classList.remove('d-none');
+                        });
+                    });
+                });
+            </script>
+        </t>
+    </template>
+
 </odoo>

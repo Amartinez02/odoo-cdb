@@ -38,5 +38,14 @@
             <field name="global" eval="True"/>
         </record>
 
+        <!-- cdb.election.voter -->
+        <record id="rule_cdb_election_voter_multicompany" model="ir.rule">
+            <field name="name">CDB Election Voter: multi-company</field>
+            <field name="model_id" ref="model_cdb_election_voter"/>
+            <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+            <field name="global" eval="True"/>
+        </record>
+
     </data>
 </odoo>
+
