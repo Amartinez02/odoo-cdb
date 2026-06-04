@@ -249,7 +249,7 @@ class CdbElectionPosition(models.Model):
 class CdbElectionCandidate(models.Model):
     _name = 'cdb.election.candidate'
     _description = 'Election candidate'
-    _order = 'position_id, sequence, id'
+    _order = 'sequence, id'
 
     election_id = fields.Many2one(
         'cdb.election', string='Election', required=True, ondelete='cascade')
@@ -318,6 +318,10 @@ class CdbElectionCandidate(models.Model):
         })
         # Notify bus channel for live updates
         self._send_bus_notification()
+        # Return False so the client does NOT reload/reorder the list view.
+        # Returning None (implicit) triggers a full One2many refresh which
+        # re-sorts rows by _order and loses the user's manual sequence.
+        return False
 
     def action_subtract_vote(self):
         self.ensure_one()
@@ -334,6 +338,8 @@ class CdbElectionCandidate(models.Model):
             'user_id': self.env.uid,
         })
         self._send_bus_notification()
+        # Same as action_add_vote: return False to prevent list reorder.
+        return False
 
     def _send_bus_notification(self):
         """Send a bus notification so the live board refreshes."""

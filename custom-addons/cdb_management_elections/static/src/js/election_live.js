@@ -1,6 +1,7 @@
 /**
  * CDB Elections – Live Board Real-time Updates
- * Optimized Version: Updates values and sorts candidates in real-time.
+ * Sorts and reorders candidates by votes on every refresh (web live board only).
+ * The backend list is kept in manual order via model-level fix (return False).
  */
 (function () {
     'use strict';
@@ -44,7 +45,10 @@
                 var candsListContainer = card.querySelector('.cdb-cands');
                 if (!candsListContainer) return;
 
-                // Sort candidates by votes (descending) before updating DOM order
+                // Sort candidates by votes (descending) and reorder DOM nodes.
+                // This is intentional for the PUBLIC web live board only.
+                // The backend list order is preserved via a different fix (return False
+                // in action_add_vote/action_subtract_vote).
                 var sortedCandidates = pos.candidates.slice().sort(function(a, b) {
                     return b.votes - a.votes;
                 });
@@ -74,7 +78,7 @@
                         fill.style.width = c.percentage + '%';
                     }
 
-                    // Update Winner Status
+                    // Update Winner Status (badge only)
                     var isWinnerNow = c.is_winner && showWinners();
                     var wasWinner = row.classList.contains('winner');
                     if (isWinnerNow !== wasWinner) {
@@ -95,8 +99,7 @@
                         }
                     }
 
-                    // 3. Live Reordering: Append the row to the container in the new sorted order.
-                    // appendChild moves the element if it already exists in the DOM.
+                    // Reorder: appendChild moves existing DOM node to new position.
                     candsListContainer.appendChild(row);
                 });
             });
