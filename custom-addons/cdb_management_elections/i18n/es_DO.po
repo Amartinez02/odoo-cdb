@@ -148,8 +148,8 @@ msgstr "Candidatos"
 
 #. module: cdb_management_elections
 #: model_terms:ir.ui.view,arch_db:cdb_management_elections.cdb_election_results
-msgid "Casa de Bendición — Sistema de elecciones"
-msgstr "Casa de Bendición — Sistema de elecciones"
+msgid "ACYMD — Sistema de elecciones"
+msgstr "ACYMD — Sistema de elecciones"
 
 #. module: cdb_management_elections
 #: model:ir.model,name:cdb_management_elections.model_cdb_election
@@ -570,8 +570,8 @@ msgstr "votos"
 
 #. module: cdb_management_elections
 #: model_terms:ir.ui.view,arch_db:cdb_management_elections.cdb_election_live
-msgid "— Casa de Bendición"
-msgstr "— Casa de Bendición"
+msgid "— ACYMD"
+msgstr "— ACYMD"
 
 #. module: cdb_management_elections
 #: model_terms:ir.ui.view,arch_db:cdb_management_elections.cdb_election_live

@@ -1,6 +1,6 @@
 # Church Management (cdb_management)
 
-Módulo de Odoo para administrar la información de miembros de una iglesia (CASA DE BENDICION).
+Módulo de Odoo para administrar la información de miembros de una iglesia (ACYMD).
 
 ## Características
 
@@ -15,7 +15,7 @@ Módulo de Odoo para administrar la información de miembros de una iglesia (CAS
 
 1. Asegúrese de que la carpeta `cdb_management` esté en su ruta de `addons`.
 2. Actualice la lista de aplicaciones en Odoo.
-3. Instale el módulo "Church Management (CDB)".
+3. Instale el módulo "Church Management (ACYMD)".
 
 ## Configuración
 

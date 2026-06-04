@@ -485,7 +485,7 @@
 
                 <!-- FOOTER -->
                 <div class="cdb-footer">
-                    <t t-out="election.name"/> — Casa de Bendición
+                    <t t-out="election.name"/> — ACYMD
                 </div>
             </div>
 
@@ -741,7 +741,7 @@
                         <strong><t t-out="publish_date"/></strong>
                     </p>
                     <p style="margin-top: 4px;">
-                        Casa de Bendición — Sistema de elecciones
+                        ACYMD — Sistema de elecciones
                     </p>
                 </div>
             </div>

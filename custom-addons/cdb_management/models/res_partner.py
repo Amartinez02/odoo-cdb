@@ -126,7 +126,7 @@ class ResPartner(models.Model):
     # Church Data
     x_baptized = fields.Boolean(string='Baptized')
     x_baptism_date = fields.Date(string='Baptism date')
-    x_church_entry_date = fields.Date(string='Entry date (CDB)')
+    x_church_entry_date = fields.Date(string='Entry date (ACYMD)')
     x_ministry_ids = fields.Many2many('church.ministry', 'church_member_ministry_rel', 'partner_id', 'ministry_id', string='Ministries')
     x_role_ids = fields.Many2many('church.role', 'church_member_role_rel', 'partner_id', 'role_id', string='Roles')
     x_interested_ministry_ids = fields.Many2many('church.ministry', 'church_member_interest_rel', 'partner_id', 'ministry_id', string='Interested ministries')

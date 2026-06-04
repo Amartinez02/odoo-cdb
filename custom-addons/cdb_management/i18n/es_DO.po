@@ -40,8 +40,8 @@ msgstr "<strong>¡Quórum alcanzado!</strong> Hay asistencia suficiente para ini
 
 #. module: cdb_management
 #: model:ir.ui.menu,name:cdb_management.menu_church_root
-msgid "ACYM CDB"
-msgstr "ACYM CDB"
+msgid "ACYM Dominicana"
+msgstr "ACYM Dominicana"
 
 #. module: cdb_management
 #: model:ir.model.fields,field_description:cdb_management.field_church_attendance__total_absence

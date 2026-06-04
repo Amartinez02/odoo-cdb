@@ -1,7 +1,7 @@
 {
     'name': 'Login Style (CDB)',
     'version': '1.0',
-    'summary': 'Customized login page for ACYM Casa de Bendición',
+    'summary': 'Customized login page for ACYMD',
     'author': 'Antigravity',
     'category': 'Website',
     'depends': ['web', 'auth_signup'],

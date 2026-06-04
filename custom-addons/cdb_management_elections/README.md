@@ -1,4 +1,4 @@
-# Church Elections Module for Casa de Bendición
+# Church Elections Module for ACYMD
 
 This module adds a complete church elections system to the CDB Management module.
 
