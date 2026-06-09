@@ -78,5 +78,13 @@
             <field name="global" eval="True"/>
         </record>
 
+        <!-- mail.activity — keep activities within the correct company -->
+        <record id="rule_mail_activity_multicompany" model="ir.rule">
+            <field name="name">Mail Activity: multi-company</field>
+            <field name="model_id" ref="mail.model_mail_activity"/>
+            <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+            <field name="global" eval="True"/>
+        </record>
+
     </data>
 </odoo>

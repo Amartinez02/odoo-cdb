@@ -6,3 +6,4 @@ from . import church_family_relation
 from . import church_attendance_report
 from . import church_dashboard
 from . import church_activity
+from . import mail_activity

@@ -16,3 +16,5 @@ __pycache__/
 
 # Mac OS files
 .DS_Store
+# Local Pi runtime state
+.atl/

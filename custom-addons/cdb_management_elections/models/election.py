@@ -155,8 +155,12 @@ class CdbElection(models.Model):
             raise UserError(
                 "Voters can only be registered while the election is in draft."
             )
+        # Only register members belonging to this election's company
         members = self.env['res.partner'].search([
             ('x_is_church_member', '=', True),
+            '|',
+            ('company_id', '=', False),
+            ('company_id', '=', self.company_id.id),
         ])
         existing_partner_ids = set(self.voter_ids.mapped('partner_id.id'))
         new_voters = []

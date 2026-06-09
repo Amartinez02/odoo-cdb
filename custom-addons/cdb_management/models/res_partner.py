@@ -5,6 +5,9 @@ from datetime import date
 class ResPartner(models.Model):
     _inherit = 'res.partner'
 
+    # ── Force company_id default for all contact creation/import paths ──
+    company_id = fields.Many2one(default=lambda self: self.env.company)
+
     x_is_church_member = fields.Boolean(string='Is church member', default=False)
     x_applies_for_assembly = fields.Boolean(string='Applies for assembly', default=False)
 
@@ -45,6 +48,9 @@ class ResPartner(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
+            # Ensure company_id is set — critical for imports and programmatic creates
+            if not vals.get('company_id'):
+                vals['company_id'] = self.env.company.id
             self._sync_name_from_parts(vals)
             if vals.get('x_is_church_member') and not vals.get('x_voter_code'):
                 vals['x_voter_code'] = self._generate_voter_code()
