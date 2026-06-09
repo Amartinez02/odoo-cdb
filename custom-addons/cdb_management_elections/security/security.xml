@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data noupdate="1">
-        <!-- Elections Manager group -->
+        <!-- Elections Manager group — implies Church Manager for full access to both modules -->
         <record id="group_cdb_elections_manager" model="res.groups">
             <field name="name">Elections Manager</field>
-            <field name="implied_ids" eval="[(4, ref('cdb_management.group_church_user'))]"/>
+            <field name="implied_ids" eval="[(4, ref('cdb_management.group_church_manager'))]"/>
             <field name="comment">
+                Full access to Church Management and Elections.
                 Can create/edit elections, manage candidates,
                 open/close/publish elections, and add/subtract votes.
             </field>

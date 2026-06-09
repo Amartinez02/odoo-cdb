@@ -183,3 +183,18 @@ class ResPartner(models.Model):
                 record.x_birthday_month = 0
                 record.x_birthday_day = 0
 
+    # ── Dashboard kanban action ───────────────────────────────────────
+
+    def open_member(self):
+        """Open the church member form from dashboard birthday kanban cards."""
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': self.display_name,
+            'res_model': 'res.partner',
+            'res_id': self.id,
+            'view_mode': 'form',
+            'view_id': self.env.ref('cdb_management.view_partner_church_form').id,
+            'target': 'current',
+        }
+
